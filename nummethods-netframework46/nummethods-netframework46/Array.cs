@@ -114,10 +114,11 @@ namespace NumMethods
         public void SolutionSLAE()
         {
             Console.Clear();
-
+            //Проверка на факторизованность матрицы
             if (AFactorized)
             {
                     Console.WriteLine("Введите вектор свободных членов: \n");
+                //Заполняем вектор свободных членов данными
                     this.VctrOfFreeMembers = new double[Dimension];
                     for (int i = 0; i < Dimension; i++)
                     {
@@ -133,26 +134,29 @@ namespace NumMethods
                         }
 
                     }
-
-                
+                ///////////////////////////////////////////////
+                //Создаем дополнительную переменную для суммирования известных членов в строках матрицы
                     double TempSum = 0;
-
+                //Цикл по всей матрице, двигаясь обратным ходом по верхней треугольной матрице
                     for (int i = Dimension-1; i>=0; i--)
                     {
                         TempSum = 0;
+                        //Высчитывание суммы всех известных членов и коэффициентов при них до I-ого столбца
                         for (int j=Dimension-1; j> i;j--)
                         {
                             TempSum += MtrxOfCoefs[i, j] * VctrOfVars[j];
                         }
-
+                        //Присваивание i-ой неизвестной 
                         VctrOfVars[i] = VctrOfFreeMembers[i]/MtrxOfCoefs[i,i] - TempSum;
                     }
 
+                    //Вывод вектора с неизвестными
                     Console.WriteLine("Вектор неизвестных X:\n");
-                    for (uint i = 0; i < Dimension - 1; i++)
+                    for (uint i = 0; i < Dimension; i++)
                         Console.WriteLine(VctrOfVars[i] + "\n");
             }   
 
+            //Если не факторизована
             else
             {
                     Console.WriteLine("Матрица не факторизована!");

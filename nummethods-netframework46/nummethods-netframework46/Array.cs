@@ -5,14 +5,18 @@ namespace NumMethods
     public class Array
     {
 
+        //A
         private double[,] MtrxOfCoefs;
-
 
         public bool AFactorized { get; set; }
 
+        //b
         private double[] VctrOfFreeMembers;
 
+        //x
         private double[] VctrOfVars;
+
+        private double[,] InvertMatrix1;
 
         public int Dimension { get; set; }
 
@@ -31,7 +35,7 @@ namespace NumMethods
             }
 
             this.MtrxOfCoefs = new double[Dimension, Dimension];
-        
+
             Console.WriteLine("Введите элементы матрицы А:\n");
             for (int i = 0; i < Dimension; i++)
                 for (int j = 0; j < Dimension; j++)
@@ -71,6 +75,21 @@ namespace NumMethods
             Console.ReadKey();
         }
 
+        public void PrintData(double[,] x)
+        {
+            Console.Clear();
+
+            Console.WriteLine("Матрица А:\n");
+            for (int i = 0; i < Dimension; i++)
+            {
+                for (int j = 0; j < Dimension; j++)
+                    Console.Write(x[i, j] + " \t");
+                Console.WriteLine();
+            }
+
+            Console.ReadKey();
+        }
+
         public void MatrixFactorization()
         {
             for (int k = 0; k < Dimension; k++)
@@ -96,54 +115,116 @@ namespace NumMethods
             //Проверка на факторизованность матрицы
             if (AFactorized)
             {
-                    Console.WriteLine("Введите вектор свободных членов: \n");
+                Console.WriteLine("Введите вектор свободных членов: \n");
                 //Заполняем вектор свободных членов данными
-                    this.VctrOfFreeMembers = new double[Dimension];
-                    for (int i = 0; i < Dimension; i++)
+                this.VctrOfFreeMembers = new double[Dimension];
+                for (int i = 0; i < Dimension; i++)
+                {
+                    try
                     {
-                        try
-                        {
-                            VctrOfFreeMembers[i] = double.Parse(Console.ReadLine());
-                        }
-
-                        catch
-                        {
-                            Console.WriteLine("Неправильно введен элемент. Введите заново!");
-                            VctrOfFreeMembers[i] = double.Parse(Console.ReadLine());
-                        }
-
+                        VctrOfFreeMembers[i] = double.Parse(Console.ReadLine());
                     }
+
+                    catch
+                    {
+                        Console.WriteLine("Неправильно введен элемент. Введите заново!");
+                        VctrOfFreeMembers[i] = double.Parse(Console.ReadLine());
+                    }
+
+                }
+
+
+                double[] x = new double[Dimension];
+                double[] y = new double[Dimension];
+
+
                 ///////////////////////////////////////////////
                 //Создаем дополнительную переменную для суммирования известных членов в строках матрицы
-                    double TempSum = 0;
+                double TempSum = 0;
                 //Цикл по всей матрице, двигаясь обратным ходом по верхней треугольной матрице
-                    for (int i = Dimension-1; i>=0; i--)
-                    {
-                        TempSum = 0;
-                        //Высчитывание суммы всех известных членов и коэффициентов при них до I-ого столбца
-                        for (int j=Dimension-1; j> i;j--)
-                        {
-                            TempSum += MtrxOfCoefs[i, j] * VctrOfVars[j];
-                        }
-                        //Присваивание i-ой неизвестной 
-                        VctrOfVars[i] = VctrOfFreeMembers[i]/MtrxOfCoefs[i,i] - TempSum;
-                    }
 
-                    //Вывод вектора с неизвестными
-                    Console.WriteLine("Вектор неизвестных X:\n");
-                    for (uint i = 0; i < Dimension; i++)
-                        Console.WriteLine(VctrOfVars[i] + "\n");
-            }   
+                for (int i = 0; i < Dimension; i++)
+                {
+                    TempSum = 0;
+                    //Высчитывание суммы всех известных членов и коэффициентов при них до I-ого столбца
+                    for (int j = 0; j < Dimension; j++)
+                    {
+                        TempSum += MtrxOfCoefs[i, j] * y[j];
+                    }
+                    //Присваивание i-ой неизвестной 
+                    y[i] = (VctrOfFreeMembers[i] - TempSum) / MtrxOfCoefs[i, i];
+                }
+
+
+                for (int i = Dimension - 1; i >= 0; i--)
+                {
+                    TempSum = 0;
+                    //Высчитывание суммы всех известных членов и коэффициентов при них до I-ого столбца
+                    for (int j = Dimension - 1; j > i; j--)
+                    {
+                        TempSum += MtrxOfCoefs[i, j] * x[j];
+                    }
+                    //Присваивание i-ой неизвестной 
+                    x[i] = y[i] - TempSum;
+                }
+
+                //Вывод вектора с неизвестными
+                Console.WriteLine("Вектор неизвестных X:\n");
+                for (uint i = 0; i < Dimension; i++)
+                    Console.WriteLine(x[i] + "\n");
+            }
 
             //Если не факторизована
             else
             {
-                    Console.WriteLine("Матрица не факторизована!");
+                Console.WriteLine("Матрица не факторизована!");
             }
 
             Console.ReadKey();
             Console.Clear();
         }
+
+        public void SolutionSLAE(double[] b, ref double[] x)
+        {
+            Console.Clear();
+            //Проверка на факторизованность матрицы
+            if (AFactorized)
+            {
+                double[] y = new double[Dimension];
+
+
+                ///////////////////////////////////////////////
+                //Создаем дополнительную переменную для суммирования известных членов в строках матрицы
+                double TempSum = 0;
+                //Цикл по всей матрице, двигаясь обратным ходом по верхней треугольной матрице
+
+                for (int i = 0; i < Dimension; i++)
+                {
+                    TempSum = 0;
+                    //Высчитывание суммы всех известных членов и коэффициентов при них до I-ого столбца
+                    for (int j = 0; j < Dimension; j++)
+                    {
+                        TempSum += MtrxOfCoefs[i, j] * y[j];
+                    }
+                    //Присваивание i-ой неизвестной 
+                    y[i] = (b[i] - TempSum) / MtrxOfCoefs[i, i];
+                }
+
+
+                for (int i = Dimension - 1; i >= 0; i--)
+                {
+                    TempSum = 0;
+                    //Высчитывание суммы всех известных членов и коэффициентов при них до I-ого столбца
+                    for (int j = Dimension - 1; j > i; j--)
+                    {
+                        TempSum += MtrxOfCoefs[i, j] * x[j];
+                    }
+                    //Присваивание i-ой неизвестной 
+                    x[i] = y[i] - TempSum;
+                }
+            }
+        }
+
 
         public void FindDeterminant()
         {
@@ -166,23 +247,43 @@ namespace NumMethods
             Console.Clear();
         }
 
-        public void FirstMatrixInversion() 
+        public void FirstMatrixInversion()
         {
             Console.Clear();
-            Console.WriteLine("Заглушка. Когда-нибудь здесь что-нибудь да будет.");
+
+            double[] x = new double[Dimension];
+
+            double[] e = new double[Dimension];
+
+            this.InvertMatrix1 = new double[Dimension, Dimension];
+
+            e.Initialize();
+
+            for (int i = 0; i < Dimension; i++)
+            {
+                if (i > 0)
+                    e[i - 1] = 0;
+                e[i] = 1;
+                SolutionSLAE(e, ref x);
+                for (int j = 0; j < Dimension; j++)
+                    InvertMatrix1[j, i] = x[j];
+            }
+
+
+            PrintData(InvertMatrix1);
+            Console.Clear();
+        }
+
+        public void SecondMatrixInversion()
+        {
+            Console.Clear();
+            
+
             Console.ReadKey();
             Console.Clear();
         }
 
-        public void SecondMatrixInversion() 
-        {
-            Console.Clear();
-            Console.WriteLine("Заглушка. Когда-нибудь здесь что-нибудь да будет.");
-            Console.ReadKey();
-            Console.Clear();
-        }
-
-        public void Experiment() 
+        public void Experiment()
         {
             Console.Clear();
             Console.WriteLine("Заглушка. Когда-нибудь здесь что-нибудь да будет.");
@@ -190,4 +291,4 @@ namespace NumMethods
             Console.Clear();
         }
     }
-}   
+}

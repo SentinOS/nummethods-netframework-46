@@ -16,7 +16,7 @@ namespace NumMethods
         //x
         private double[] VctrOfVars;
 
-        private double[,] InvertMatrix1;
+        private double[,] InverseMatrixFirstType;
 
         public int Dimension { get; set; }
 
@@ -75,11 +75,11 @@ namespace NumMethods
             Console.ReadKey();
         }
 
-        public void PrintData(double[,] x)
+        public void PrintData(double[,] x, string NameOfMatrix)
         {
             Console.Clear();
 
-            Console.WriteLine("Матрица А:\n");
+            Console.WriteLine("Матрица {0}:\n", NameOfMatrix);
             for (int i = 0; i < Dimension; i++)
             {
                 for (int j = 0; j < Dimension; j++)
@@ -196,30 +196,32 @@ namespace NumMethods
                 ///////////////////////////////////////////////
                 //Создаем дополнительную переменную для суммирования известных членов в строках матрицы
                 double TempSum = 0;
-                //Цикл по всей матрице, двигаясь обратным ходом по верхней треугольной матрице
+
+
+                //Первый ход - сверху вниз 
 
                 for (int i = 0; i < Dimension; i++)
                 {
                     TempSum = 0;
-                    //Высчитывание суммы всех известных членов и коэффициентов при них до I-ого столбца
                     for (int j = 0; j < Dimension; j++)
                     {
                         TempSum += MtrxOfCoefs[i, j] * y[j];
                     }
-                    //Присваивание i-ой неизвестной 
+
                     y[i] = (b[i] - TempSum) / MtrxOfCoefs[i, i];
                 }
 
 
+                //Второй ход - снизу вверх
+
                 for (int i = Dimension - 1; i >= 0; i--)
                 {
                     TempSum = 0;
-                    //Высчитывание суммы всех известных членов и коэффициентов при них до I-ого столбца
                     for (int j = Dimension - 1; j > i; j--)
                     {
                         TempSum += MtrxOfCoefs[i, j] * x[j];
                     }
-                    //Присваивание i-ой неизвестной 
+
                     x[i] = y[i] - TempSum;
                 }
             }
@@ -253,9 +255,10 @@ namespace NumMethods
 
             double[] x = new double[Dimension];
 
+            //вектор-столбец единичной матрицы
             double[] e = new double[Dimension];
 
-            this.InvertMatrix1 = new double[Dimension, Dimension];
+            this.InverseMatrixFirstType = new double[Dimension, Dimension];
 
             e.Initialize();
 
@@ -266,11 +269,11 @@ namespace NumMethods
                 e[i] = 1;
                 SolutionSLAE(e, ref x);
                 for (int j = 0; j < Dimension; j++)
-                    InvertMatrix1[j, i] = x[j];
+                    InverseMatrixFirstType[j, i] = x[j];
             }
 
 
-            PrintData(InvertMatrix1);
+            PrintData(InverseMatrixFirstType, nameof(InverseMatrixFirstType));
             Console.Clear();
         }
 

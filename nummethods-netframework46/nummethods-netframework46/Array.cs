@@ -276,11 +276,81 @@ namespace NumMethods
 
         public void SecondMatrixInversion()
         {
-            Console.Clear();
             
+            //Подготовка всей матрицы
+           // Подготовка |U
+            for (int i = 0; i < Dimension; i++)
+            {
+                for (int j = i + 1; j < Dimension; j++)
+                {
+                    MtrxOfCoefs[i, j] = -MtrxOfCoefs[i, j];
+                }
+            }
 
-            Console.ReadKey();
-            Console.Clear();
+            //Подготовка L
+            for (int j = 0; j < Dimension; j++)
+            {
+                MtrxOfCoefs[j, j] = 1 / MtrxOfCoefs[j, j];
+                for (int i = j+1; i < Dimension; i++)
+                {
+                    MtrxOfCoefs[i,j] = -MtrxOfCoefs[i, j] * MtrxOfCoefs[j, j];
+                }
+            }
+
+            //Ищем |U^-1
+            for(int k=Dimension-1;k>1;k--)
+            {
+                for(int i=0; i<k-1; i++)
+                { 
+                    for(int j=k;j<Dimension;j++)
+                    {
+                        MtrxOfCoefs[i, j] += MtrxOfCoefs[i, k-1] * MtrxOfCoefs[k-1, j];
+                    }
+                }
+            }
+            PrintData(MtrxOfCoefs);
+
+            //Ищем L^-1 Что то тут не так
+            for (int k=0;k<Dimension-1;k++)
+            {
+                for (int i=k+1;i<Dimension;i++)
+                {
+                    for (int j = 0; j < k; j++) { 
+                        MtrxOfCoefs[i, j] += MtrxOfCoefs[i, k + 1] * MtrxOfCoefs[k + 1, j];
+                    }
+                }
+                for (int j = 0; j < k; j++)
+                {
+                    MtrxOfCoefs[k + 1, j] = MtrxOfCoefs[k + 1, j] * MtrxOfCoefs[k + 1, k + 1];
+                }
+            }
+            PrintData(MtrxOfCoefs);
+
+            for(int i=0;i<Dimension;i++)
+            {
+                for(int j=0;j<Dimension;j++)
+                {
+                    double sum=0;
+                    if (i<j)
+                    {
+                        sum = 0;
+                        for(int k=j;k<Dimension;k++)
+                        {
+                            sum += MtrxOfCoefs[i, k] * MtrxOfCoefs[k, j];
+                        }
+                    }
+                    if(i>=j)
+                    {
+                        sum = MtrxOfCoefs[i,j];
+                        for (int k = i+1; k < Dimension; k++)
+                        {
+                            sum += MtrxOfCoefs[i, k] * MtrxOfCoefs[k, j];
+                        }
+                    }
+                    MtrxOfCoefs[i, j] = sum;
+                }
+            }
+            PrintData(MtrxOfCoefs);
         }
 
         public void Experiment()

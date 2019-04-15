@@ -285,7 +285,8 @@ namespace NumMethods
                 {
                     MtrxOfCoefs[i, j] = -MtrxOfCoefs[i, j];
                 }
-            }
+            }
+
             //Подготовка L
             for (int j = 0; j < Dimension; j++)
             {
@@ -307,6 +308,7 @@ namespace NumMethods
                     }
                 }
             }
+
 
             //Ищем L^-1 Что то тут не так
             for (int k=0;k<Dimension-1;k++)

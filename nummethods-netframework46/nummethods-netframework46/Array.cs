@@ -17,6 +17,7 @@ namespace NumMethods
         private double[] VctrOfVars;
 
         private double[,] InvertMatrix1;
+        private double[,] InvertMatrix2;
 
         public int Dimension { get; set; }
 
@@ -88,6 +89,7 @@ namespace NumMethods
             }
 
             Console.ReadKey();
+            Console.Clear();
         }
 
         public void MatrixFactorization()
@@ -113,72 +115,71 @@ namespace NumMethods
         {
             Console.Clear();
             //Проверка на факторизованность матрицы
-            if (AFactorized)
+            if (!AFactorized)
             {
-                Console.WriteLine("Введите вектор свободных членов: \n");
-                //Заполняем вектор свободных членов данными
-                this.VctrOfFreeMembers = new double[Dimension];
-                for (int i = 0; i < Dimension; i++)
+                Console.Clear();
+                Console.WriteLine("Матрица не факторизирована, факторизируем.\n");
+                MatrixFactorization();
+                Console.Clear();
+            }
+            Console.WriteLine("Введите вектор свободных членов: \n");
+            //Заполняем вектор свободных членов данными
+            this.VctrOfFreeMembers = new double[Dimension];
+            for (int i = 0; i < Dimension; i++)
+            {
+                try
                 {
-                    try
-                    {
-                        VctrOfFreeMembers[i] = double.Parse(Console.ReadLine());
-                    }
-
-                    catch
-                    {
-                        Console.WriteLine("Неправильно введен элемент. Введите заново!");
-                        VctrOfFreeMembers[i] = double.Parse(Console.ReadLine());
-                    }
-
+                    VctrOfFreeMembers[i] = double.Parse(Console.ReadLine());
                 }
 
-
-                double[] x = new double[Dimension];
-                double[] y = new double[Dimension];
-
-
-                ///////////////////////////////////////////////
-                //Создаем дополнительную переменную для суммирования известных членов в строках матрицы
-                double TempSum = 0;
-                //Цикл по всей матрице, двигаясь обратным ходом по верхней треугольной матрице
-
-                for (int i = 0; i < Dimension; i++)
+                catch
                 {
-                    TempSum = 0;
-                    //Высчитывание суммы всех известных членов и коэффициентов при них до I-ого столбца
-                    for (int j = 0; j < Dimension; j++)
-                    {
-                        TempSum += MtrxOfCoefs[i, j] * y[j];
-                    }
-                    //Присваивание i-ой неизвестной 
-                    y[i] = (VctrOfFreeMembers[i] - TempSum) / MtrxOfCoefs[i, i];
+                    Console.WriteLine("Неправильно введен элемент. Введите заново!");
+                    VctrOfFreeMembers[i] = double.Parse(Console.ReadLine());
                 }
 
-
-                for (int i = Dimension - 1; i >= 0; i--)
-                {
-                    TempSum = 0;
-                    //Высчитывание суммы всех известных членов и коэффициентов при них до I-ого столбца
-                    for (int j = Dimension - 1; j > i; j--)
-                    {
-                        TempSum += MtrxOfCoefs[i, j] * x[j];
-                    }
-                    //Присваивание i-ой неизвестной 
-                    x[i] = y[i] - TempSum;
-                }
-
-                //Вывод вектора с неизвестными
-                Console.WriteLine("Вектор неизвестных X:\n");
-                for (uint i = 0; i < Dimension; i++)
-                    Console.WriteLine(x[i] + "\n");
             }
 
-            //Если не факторизована
-            else
+
+            double[] x = new double[Dimension];
+            double[] y = new double[Dimension];
+
+
+            ///////////////////////////////////////////////
+            //Создаем дополнительную переменную для суммирования известных членов в строках матрицы
+            double TempSum = 0;
+            //Цикл по всей матрице, двигаясь обратным ходом по верхней треугольной матрице
+
+            for (int i = 0; i < Dimension; i++)
             {
-                Console.WriteLine("Матрица не факторизована!");
+                TempSum = 0;
+                //Высчитывание суммы всех известных членов и коэффициентов при них до I-ого столбца
+                for (int j = 0; j < Dimension; j++)
+                {
+                    TempSum += MtrxOfCoefs[i, j] * y[j];
+                }
+                //Присваивание i-ой неизвестной 
+                y[i] = (VctrOfFreeMembers[i] - TempSum) / MtrxOfCoefs[i, i];
             }
+
+
+            for (int i = Dimension - 1; i >= 0; i--)
+            {
+                TempSum = 0;
+                //Высчитывание суммы всех известных членов и коэффициентов при них до I-ого столбца
+                for (int j = Dimension - 1; j > i; j--)
+                {
+                    TempSum += MtrxOfCoefs[i, j] * x[j];
+                }
+                //Присваивание i-ой неизвестной 
+                x[i] = y[i] - TempSum;
+            }
+
+            //Вывод вектора с неизвестными
+            Console.WriteLine("Вектор неизвестных X:\n");
+            for (uint i = 0; i < Dimension; i++)
+                Console.WriteLine(x[i] + "\n");
+
 
             Console.ReadKey();
             Console.Clear();
@@ -186,62 +187,68 @@ namespace NumMethods
 
         public void SolutionSLAE(double[] b, ref double[] x)
         {
-            Console.Clear();
             //Проверка на факторизованность матрицы
-            if (AFactorized)
+            if (!AFactorized)
             {
-                double[] y = new double[Dimension];
-
-
-                ///////////////////////////////////////////////
-                //Создаем дополнительную переменную для суммирования известных членов в строках матрицы
-                double TempSum = 0;
-                //Цикл по всей матрице, двигаясь обратным ходом по верхней треугольной матрице
-
-                for (int i = 0; i < Dimension; i++)
-                {
-                    TempSum = 0;
-                    //Высчитывание суммы всех известных членов и коэффициентов при них до I-ого столбца
-                    for (int j = 0; j < Dimension; j++)
-                    {
-                        TempSum += MtrxOfCoefs[i, j] * y[j];
-                    }
-                    //Присваивание i-ой неизвестной 
-                    y[i] = (b[i] - TempSum) / MtrxOfCoefs[i, i];
-                }
-
-
-                for (int i = Dimension - 1; i >= 0; i--)
-                {
-                    TempSum = 0;
-                    //Высчитывание суммы всех известных членов и коэффициентов при них до I-ого столбца
-                    for (int j = Dimension - 1; j > i; j--)
-                    {
-                        TempSum += MtrxOfCoefs[i, j] * x[j];
-                    }
-                    //Присваивание i-ой неизвестной 
-                    x[i] = y[i] - TempSum;
-                }
+                Console.Clear();
+                Console.WriteLine("Матрица не факторизирована, факторизируем.\n");
+                MatrixFactorization();
+                Console.Clear();
             }
+
+            double[] y = new double[Dimension];
+
+            ///////////////////////////////////////////////
+            //Создаем дополнительную переменную для суммирования известных членов в строках матрицы
+            double TempSum = 0;
+            //Цикл по всей матрице, двигаясь обратным ходом по верхней треугольной матрице
+
+            for (int i = 0; i < Dimension; i++)
+            {
+                TempSum = 0;
+                //Высчитывание суммы всех известных членов и коэффициентов при них до I-ого столбца
+                for (int j = 0; j < Dimension; j++)
+                {
+                    TempSum += MtrxOfCoefs[i, j] * y[j];
+                }
+                //Присваивание i-ой неизвестной 
+                y[i] = (b[i] - TempSum) / MtrxOfCoefs[i, i];
+            }
+
+
+            for (int i = Dimension - 1; i >= 0; i--)
+            {
+                TempSum = 0;
+                //Высчитывание суммы всех известных членов и коэффициентов при них до I-ого столбца
+                for (int j = Dimension - 1; j > i; j--)
+                {
+                    TempSum += MtrxOfCoefs[i, j] * x[j];
+                }
+                //Присваивание i-ой неизвестной 
+                x[i] = y[i] - TempSum;
+            }
+
         }
 
 
         public void FindDeterminant()
         {
             Console.Clear();
-            if (AFactorized)
+            //Проверка на факторизованность матрицы
+            if (!AFactorized)
             {
-                double determinant = MtrxOfCoefs[0, 0];
-                for (int i = 1; i < Dimension; i++)
-                    determinant *= MtrxOfCoefs[i, i];
-
-                Console.WriteLine("Определитель матрицы равен {0}", determinant);
+                Console.Clear();
+                Console.WriteLine("Матрица не факторизирована, факторизируем.\n");
+                MatrixFactorization();
+                Console.Clear();
             }
 
-            else
-            {
-                Console.WriteLine("Матрица не факторизована!");
-            }
+            double determinant = MtrxOfCoefs[0, 0];
+            for (int i = 1; i < Dimension; i++)
+                determinant *= MtrxOfCoefs[i, i];
+
+            Console.WriteLine("Определитель матрицы равен {0}", determinant);
+
 
             Console.ReadKey();
             Console.Clear();
@@ -255,7 +262,7 @@ namespace NumMethods
 
             double[] e = new double[Dimension];
 
-            this.InvertMatrix1 = new double[Dimension, Dimension];
+            InvertMatrix1 = new double[Dimension, Dimension];
 
             e.Initialize();
 
@@ -271,85 +278,102 @@ namespace NumMethods
 
 
             PrintData(InvertMatrix1);
-            Console.Clear();
         }
 
         public void SecondMatrixInversion()
         {
-            
+
+            if (!AFactorized)
+            {
+                Console.Clear();
+                Console.WriteLine("Матрица не факторизирована, факторизируем.\n");
+                MatrixFactorization();
+                Console.Clear();
+            }
+
+            InvertMatrix2 = new double[Dimension, Dimension];
+            for (int i = 0; i < Dimension; i++)
+            {
+                for (int j = 0; j < Dimension; j++)
+                {
+                    InvertMatrix2[i, j] = MtrxOfCoefs[i, j];
+                }
+            }
+
             //Подготовка всей матрицы
-           // Подготовка |U
+            // Подготовка |U
             for (int i = 0; i < Dimension; i++)
             {
                 for (int j = i + 1; j < Dimension; j++)
                 {
-                    MtrxOfCoefs[i, j] = -MtrxOfCoefs[i, j];
+                    InvertMatrix2[i, j] = -InvertMatrix2[i, j];
                 }
             }
             //Подготовка L
             for (int j = 0; j < Dimension; j++)
             {
-                MtrxOfCoefs[j, j] = 1 / MtrxOfCoefs[j, j];
-                for (int i = j+1; i < Dimension; i++)
+                InvertMatrix2[j, j] = 1 / InvertMatrix2[j, j];
+                for (int i = j + 1; i < Dimension; i++)
                 {
-                    MtrxOfCoefs[i,j] = -MtrxOfCoefs[i, j] * MtrxOfCoefs[j, j];
+                    InvertMatrix2[i, j] = -InvertMatrix2[i, j] * InvertMatrix2[j, j];
                 }
             }
 
             //Ищем |U^-1
-            for (int k=Dimension-1;k>0;k--)
+            for (int k = Dimension - 1; k > 0; k--)
             {
-                for(int i=0; i<k-1; i++)
-                { 
-                    for(int j=k;j<Dimension;j++)
+                for (int i = 0; i < k - 1; i++)
+                {
+                    for (int j = k; j < Dimension; j++)
                     {
-                        MtrxOfCoefs[i, j] += MtrxOfCoefs[i, k-1] * MtrxOfCoefs[k-1, j];
+                        InvertMatrix2[i, j] += InvertMatrix2[i, k - 1] * InvertMatrix2[k - 1, j];
                     }
                 }
             }
 
             //Ищем L^-1 Что то тут не так
-            for (int k=0;k<Dimension-1;k++)
+            for (int k = 0; k < Dimension - 1; k++)
             {
-                for (int i=k+2;i<Dimension;i++)
+                for (int i = k + 2; i < Dimension; i++)
                 {
-                    for (int j = 0; j <= k; j++) { 
-                        MtrxOfCoefs[i, j] += MtrxOfCoefs[i, k + 1] * MtrxOfCoefs[k + 1, j];
+                    for (int j = 0; j <= k; j++)
+                    {
+                        InvertMatrix2[i, j] += InvertMatrix2[i, k + 1] * InvertMatrix2[k + 1, j];
                     }
                 }
                 for (int j = 0; j <= k; j++)
                 {
-                    MtrxOfCoefs[k + 1, j] = MtrxOfCoefs[k + 1, j] * MtrxOfCoefs[k + 1, k + 1];
+                    InvertMatrix2[k + 1, j] = InvertMatrix2[k + 1, j] * InvertMatrix2[k + 1, k + 1];
                 }
             }
 
             // Перемножение матриц U^(-1) и L^(-1)
-            for (int i=0;i<Dimension;i++)
+            for (int i = 0; i < Dimension; i++)
             {
-                for(int j=0;j<Dimension;j++)
+                for (int j = 0; j < Dimension; j++)
                 {
-                    double sum=0;
-                    if (i<j)
+                    double sum = 0;
+                    if (i < j)
                     {
                         sum = 0;
-                        for(int k=j;k<Dimension;k++)
+                        for (int k = j; k < Dimension; k++)
                         {
-                            sum += MtrxOfCoefs[i, k] * MtrxOfCoefs[k, j];
+                            sum += InvertMatrix2[i, k] * InvertMatrix2[k, j];
                         }
                     }
-                    else if(i>=j)
+                    else if (i >= j)
                     {
-                        sum = MtrxOfCoefs[i,j];
-                        for (int k = i+1; k < Dimension; k++)
+                        sum = InvertMatrix2[i, j];
+                        for (int k = i + 1; k < Dimension; k++)
                         {
-                            sum += MtrxOfCoefs[i, k] * MtrxOfCoefs[k, j];
+                            sum += InvertMatrix2[i, k] * InvertMatrix2[k, j];
                         }
                     }
-                    MtrxOfCoefs[i, j] = sum;
+                    InvertMatrix2[i, j] = sum;
                 }
             }
 
-            PrintData(MtrxOfCoefs);
+            PrintData(InvertMatrix2);
         }
 
         public void Experiment()

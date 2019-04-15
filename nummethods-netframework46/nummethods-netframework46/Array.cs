@@ -10,15 +10,23 @@ namespace NumMethods
 
         public bool AFactorized { get; set; }
 
+        public int Znak { get; set; }
+
         //b
         private double[] VctrOfFreeMembers;
 
         //x
         private double[] VctrOfVars;
 
+        //первая обращенная матрица
         private double[,] InvertMatrix1;
+
+        //вторая обращенная матрица
         private double[,] InvertMatrix2;
 
+        //матрица перестановок
+        private int[] Transposition;
+        
         public int Dimension { get; set; }
 
 
@@ -94,13 +102,44 @@ namespace NumMethods
 
         public void MatrixFactorization()
         {
+            Transposition = new int[Dimension];
+            for (int i = 0; i < Dimension; i++)
+                Transposition[i] = i;
+
             for (int k = 0; k < Dimension; k++)
             {
+                int iMax = k;
+                double max = Math.Abs(MtrxOfCoefs[k, Transposition[k]]);
+
+                for (int i = k + 1; i < Dimension; i++)
+                {
+                    if (Math.Abs(MtrxOfCoefs[i, Transposition[k]]) > max)
+                    {
+                        max = Math.Abs(MtrxOfCoefs[i, Transposition[k]]);
+                        iMax = i;
+                    }
+
+                    if(iMax != k)
+                    {
+                        int buf = Transposition[k];
+                        Transposition[k] = Transposition[iMax];
+                        Transposition[iMax] = buf;
+                        Znak *= -1;
+                    }
+
+                    if (Math.Abs(MtrxOfCoefs[k, Transposition[k]]) < 2 * Double.Epsilon)
+                    {
+                        Console.WriteLine("Ошибка разложения! ");
+                        return;
+                    }
+                }
+
                 for (int j = k + 1; j < Dimension; j++)
-                    MtrxOfCoefs[k, j] /= MtrxOfCoefs[k, k];
+                    MtrxOfCoefs[k, Transposition[j]] /= MtrxOfCoefs[k, Transposition[k]];
+
                 for (int i = k + 1; i < Dimension; i++)
                     for (int j = k + 1; j < Dimension; j++)
-                        MtrxOfCoefs[i, j] -= MtrxOfCoefs[i, k] * MtrxOfCoefs[k, j];
+                        MtrxOfCoefs[i, Transposition[j]] -= MtrxOfCoefs[i, Transposition[k]] * MtrxOfCoefs[k, Transposition[j]];
             }
 
 

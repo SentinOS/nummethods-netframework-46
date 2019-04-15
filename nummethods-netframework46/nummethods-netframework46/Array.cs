@@ -44,11 +44,14 @@ namespace NumMethods
             }
 
             this.MtrxOfCoefs = new double[Dimension, Dimension];
+            Transposition = new int[Dimension];
+            for(int i=0;i<Dimension;i++) Transposition[i] = i;
 
             Console.WriteLine("Введите элементы матрицы А:\n");
             for (int i = 0; i < Dimension; i++)
                 for (int j = 0; j < Dimension; j++)
                 {
+                    
                     try
                     {
                         MtrxOfCoefs[i, j] = double.Parse(Console.ReadLine());
@@ -77,7 +80,7 @@ namespace NumMethods
             for (int i = 0; i < Dimension; i++)
             {
                 for (int j = 0; j < Dimension; j++)
-                    Console.Write(MtrxOfCoefs[i, j] + " \t");
+                    Console.Write(MtrxOfCoefs[i, Transposition[j]] + " \t");
                 Console.WriteLine();
             }
 
@@ -92,7 +95,7 @@ namespace NumMethods
             for (int i = 0; i < Dimension; i++)
             {
                 for (int j = 0; j < Dimension; j++)
-                    Console.Write(x[i, j] + " \t");
+                    Console.Write(x[i, Transposition[j]] + " \t");
                 Console.WriteLine();
             }
 
@@ -103,6 +106,7 @@ namespace NumMethods
         public void MatrixFactorization()
         {
             Transposition = new int[Dimension];
+            Znak = 1;
             for (int i = 0; i < Dimension; i++)
                 Transposition[i] = i;
 
@@ -119,19 +123,18 @@ namespace NumMethods
                         iMax = i;
                     }
 
-                    if(iMax != k)
-                    {
-                        int buf = Transposition[k];
-                        Transposition[k] = Transposition[iMax];
-                        Transposition[iMax] = buf;
-                        Znak *= -1;
-                    }
-
                     if (Math.Abs(MtrxOfCoefs[k, Transposition[k]]) < 2 * Double.Epsilon)
                     {
                         Console.WriteLine("Ошибка разложения! ");
                         return;
                     }
+                }
+                if (iMax != k)
+                {
+                    int buf = Transposition[k];
+                    Transposition[k] = Transposition[iMax];
+                    Transposition[iMax] = buf;
+                    Znak *= -1;
                 }
 
                 for (int j = k + 1; j < Dimension; j++)
@@ -146,7 +149,9 @@ namespace NumMethods
             Console.Clear();
 
             AFactorized = true;
-            PrintData();
+            Console.WriteLine("Матрица факторизирована.\n");
+            Console.ReadKey();
+            Console.Clear();
 
         }
 
@@ -157,9 +162,8 @@ namespace NumMethods
             if (!AFactorized)
             {
                 Console.Clear();
-                Console.WriteLine("Матрица не факторизирована, факторизируем.\n");
                 MatrixFactorization();
-                Console.Clear();
+                Console.WriteLine("Матрица была не факторизирована, факторизировали.\n");
             }
             Console.WriteLine("Введите вектор свободных членов: \n");
             //Заполняем вектор свободных членов данными
@@ -192,13 +196,14 @@ namespace NumMethods
             for (int i = 0; i < Dimension; i++)
             {
                 TempSum = 0;
+
                 //Высчитывание суммы всех известных членов и коэффициентов при них до I-ого столбца
-                for (int j = 0; j < Dimension; j++)
+                for (int j = 0; j < i; j++)
                 {
-                    TempSum += MtrxOfCoefs[i, j] * y[j];
+                    TempSum += MtrxOfCoefs[i, Transposition[j]] * y[j];
                 }
                 //Присваивание i-ой неизвестной 
-                y[i] = (VctrOfFreeMembers[i] - TempSum) / MtrxOfCoefs[i, i];
+                y[i] = (VctrOfFreeMembers[i] - TempSum) / MtrxOfCoefs[i, Transposition[i]];
             }
 
 
@@ -206,9 +211,9 @@ namespace NumMethods
             {
                 TempSum = 0;
                 //Высчитывание суммы всех известных членов и коэффициентов при них до I-ого столбца
-                for (int j = Dimension - 1; j > i; j--)
+                for (int j = i+1; j < Dimension; j++)
                 {
-                    TempSum += MtrxOfCoefs[i, j] * x[j];
+                    TempSum += MtrxOfCoefs[i, Transposition[j]] * x[j];
                 }
                 //Присваивание i-ой неизвестной 
                 x[i] = y[i] - TempSum;
@@ -230,9 +235,8 @@ namespace NumMethods
             if (!AFactorized)
             {
                 Console.Clear();
-                Console.WriteLine("Матрица не факторизирована, факторизируем.\n");
                 MatrixFactorization();
-                Console.Clear();
+                Console.WriteLine("Матрица была не факторизирована, факторизировали.\n");
             }
 
             double[] y = new double[Dimension];
@@ -248,10 +252,10 @@ namespace NumMethods
                 //Высчитывание суммы всех известных членов и коэффициентов при них до I-ого столбца
                 for (int j = 0; j < Dimension; j++)
                 {
-                    TempSum += MtrxOfCoefs[i, j] * y[j];
+                    TempSum += MtrxOfCoefs[i, Transposition[j]] * y[j];
                 }
                 //Присваивание i-ой неизвестной 
-                y[i] = (b[i] - TempSum) / MtrxOfCoefs[i, i];
+                y[i] = (b[i] - TempSum) / MtrxOfCoefs[i, Transposition[i]];
             }
 
 
@@ -261,7 +265,7 @@ namespace NumMethods
                 //Высчитывание суммы всех известных членов и коэффициентов при них до I-ого столбца
                 for (int j = Dimension - 1; j > i; j--)
                 {
-                    TempSum += MtrxOfCoefs[i, j] * x[j];
+                    TempSum += MtrxOfCoefs[i, Transposition[j]] * x[j];
                 }
                 //Присваивание i-ой неизвестной 
                 x[i] = y[i] - TempSum;
@@ -269,27 +273,28 @@ namespace NumMethods
 
         }
 
-        public void FindDeterminant()
+        public double FindDeterminant()
         {
             Console.Clear();
             //Проверка на факторизованность матрицы
             if (!AFactorized)
             {
                 Console.Clear();
-                Console.WriteLine("Матрица не факторизирована, факторизируем.\n");
                 MatrixFactorization();
-                Console.Clear();
+                Console.WriteLine("Матрица была не факторизирована, факторизировали.\n");
             }
 
-            double determinant = MtrxOfCoefs[0, 0];
+            double determinant = MtrxOfCoefs[0, Transposition[0]];
             for (int i = 1; i < Dimension; i++)
-                determinant *= MtrxOfCoefs[i, i];
+                determinant *= MtrxOfCoefs[i, Transposition[i]];
 
+            determinant *= Znak;
             Console.WriteLine("Определитель матрицы равен {0}", determinant);
 
 
             Console.ReadKey();
             Console.Clear();
+            return determinant;
         }
 
         public void FirstMatrixInversion()
@@ -324,9 +329,8 @@ namespace NumMethods
             if (!AFactorized)
             {
                 Console.Clear();
-                Console.WriteLine("Матрица не факторизирована, факторизируем.\n");
                 MatrixFactorization();
-                Console.Clear();
+                Console.WriteLine("Матрица была не факторизирована, факторизировали.\n");
             }
 
             InvertMatrix2 = new double[Dimension, Dimension];
@@ -334,7 +338,7 @@ namespace NumMethods
             {
                 for (int j = 0; j < Dimension; j++)
                 {
-                    InvertMatrix2[i, j] = MtrxOfCoefs[i, j];
+                    InvertMatrix2[i, j] = MtrxOfCoefs[i, Transposition[j]];
                 }
             }
 

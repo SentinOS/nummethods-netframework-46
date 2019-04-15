@@ -39,47 +39,47 @@ namespace NumMethods
                 {
                     case 1:
                         array.InsertData();
-                        Console.Clear();
+                        
                         break;
 
                     case 2:
                         array.MatrixFactorization();
-                        Console.Clear();
+                        
                         break;
 
                     case 3:
                         array.SolutionSLAE();
-                        Console.Clear();
+                        
                         break;
 
                     case 4:
                         array.FindDeterminant();
-                        Console.Clear();
+                        
                         break;
 
                     case 5:
                         array.FirstMatrixInversion();
-                        Console.Clear();
+                        
                         break;
 
                     case 6:
                         array.SecondMatrixInversion();
-                        Console.Clear();
+                        
                         break;
 
                     case 7:
                         array.Experiment();
-                        Console.Clear();
+                        
                         break;
 
                     case 8:
                         array.Experiment();
-                        Console.Clear();
+                        
                         break;
 
                     case 9:
                         array.Experiment();
-                        Console.Clear();
+                        
                         break;
 
                     case 10:

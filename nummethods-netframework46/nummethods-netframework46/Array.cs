@@ -5,12 +5,21 @@ namespace NumMethods
     public class Array
     {
 
-        //A
-        private double[,] MtrxOfCoefs;
+        
+        private double[,] MtrxOfCoefs; //A
 
         public bool AFactorized { get; set; }
 
         public int Znak { get; set; }
+
+        int oper_f = 0; //Фактическое число операций
+
+        int oper_t = 0; //Теоретическое число операций
+
+        double time_f = 0; //Время работы программы
+        public double TIME { get { return time_f; } }
+        public int OPER_F { get { return oper_f; } }
+        public int OPER_T { get { return oper_t; } }
 
         //b
         private double[] VctrOfFreeMembers;
@@ -29,7 +38,6 @@ namespace NumMethods
 
         private int[] TranspositionI;
         public int Dimension { get; set; }
-
 
         public void InsertData()
         {
@@ -127,12 +135,19 @@ namespace NumMethods
 
         public void MatrixFactorization()
         {
-            
+
+            oper_f = 0;                         //Файктическое число оперций.
+            oper_t = 0;                         //Теоретическое число операций.
+            DateTime date = DateTime.Now;
+
             Znak = 1;
             for (int i = 0; i < Dimension; i++) { 
                 TranspositionJ[i] = i;
                 TranspositionI[i] = i;
             }
+
+            oper_t = Dimension * Dimension * Dimension;
+
             for (int k = 0; k < Dimension; k++)
             {
                 int iMax = k;
@@ -148,6 +163,7 @@ namespace NumMethods
                             max = Math.Abs(MtrxOfCoefs[TranspositionI[i], TranspositionJ[j]]);
                             iMax = i;
                             jMax = j;
+                            oper_f++;
                         }
                     }
                     //if (Math.Abs(MtrxOfCoefs[k, Transposition[k]]) < 2 * Double.Epsilon)
@@ -162,6 +178,7 @@ namespace NumMethods
                     TranspositionI[k] = TranspositionI[iMax];
                     TranspositionI[iMax] = buf;
                     Znak *= -1;
+                    oper_f++;
                 }
                 if (jMax != k)
                 {
@@ -169,16 +186,22 @@ namespace NumMethods
                     TranspositionJ[k] = TranspositionJ[jMax];
                     TranspositionJ[jMax] = buf;
                     Znak *= -1;
+                    oper_f++;
                 }
                 //////////////////////////////////////////////
-                for (int j = k + 1; j < Dimension; j++)
+                for (int j = k + 1; j < Dimension; j++) {                    
                     MtrxOfCoefs[TranspositionI[k], TranspositionJ[j]] /= MtrxOfCoefs[TranspositionI[k], TranspositionJ[k]];
-
-                for (int i = k + 1; i < Dimension; i++)
-                    for (int j = k + 1; j < Dimension; j++)
+                    oper_f++;
+                }
+                for (int i = k + 1; i < Dimension; i++) { 
+                    for (int j = k + 1; j < Dimension; j++) { 
                         MtrxOfCoefs[TranspositionI[i], TranspositionJ[j]] -= MtrxOfCoefs[TranspositionI[i], TranspositionJ[k]] * MtrxOfCoefs[TranspositionI[k], TranspositionJ[j]];
+                        oper_f++;
+                    }
+                }
             }
-
+            TimeSpan sp = DateTime.Now - date;      //Фиксируем время окончания LU разложения
+            time_f = sp.TotalMilliseconds;
 
             Console.Clear();
 
@@ -200,6 +223,10 @@ namespace NumMethods
                 Console.WriteLine("Матрица была не факторизирована, факторизировали.\n");
             }
             Console.WriteLine("Введите вектор свободных членов: \n");
+
+            DateTime date = DateTime.Now;           //Сохраняем время начала решения СЛАУ
+            oper_t += Dimension * Dimension;
+
             //Заполняем вектор свободных членов данными
             this.VctrOfFreeMembers = new double[Dimension];
             for (int i = 0; i < Dimension; i++)
@@ -235,9 +262,11 @@ namespace NumMethods
                 for (int j = 0; j < i; j++)
                 {
                     TempSum += MtrxOfCoefs[TranspositionI[i], TranspositionJ[j]] * y[j];
+                    oper_f++;
                 }
                 //Присваивание i-ой неизвестной 
                 y[i] = (VctrOfFreeMembers[TranspositionI[i]] - TempSum) / MtrxOfCoefs[TranspositionI[i], TranspositionJ[i]];
+                oper_f++;
             }
 
 
@@ -248,11 +277,15 @@ namespace NumMethods
                 for (int j = i+1; j < Dimension; j++)
                 {
                     TempSum += MtrxOfCoefs[TranspositionI[i], TranspositionJ[j]] * x[TranspositionJ[j]];
+                    oper_f++;
                 }
                 //Присваивание i-ой неизвестной 
                 x[TranspositionJ[i]] = y[i] - TempSum;
+                oper_f++;
             }
 
+            TimeSpan sp = DateTime.Now - date;
+            time_f += sp.TotalMilliseconds;
             //Вывод вектора с неизвестными
             Console.WriteLine("Вектор неизвестных X:\n");
             for (uint i = 0; i < Dimension; i++)
@@ -275,6 +308,10 @@ namespace NumMethods
 
             double[] y = new double[Dimension];
 
+
+            DateTime date = DateTime.Now;           //Сохраняем время начала решения СЛАУ
+            oper_t += Dimension * Dimension;
+
             ///////////////////////////////////////////////
             //Создаем дополнительную переменную для суммирования известных членов в строках матрицы
             double TempSum = 0;
@@ -287,9 +324,11 @@ namespace NumMethods
                 for (int j = 0; j < Dimension; j++)
                 {
                     TempSum += MtrxOfCoefs[TranspositionI[i], TranspositionJ[j]] * y[j];
+                    oper_f++;
                 }
                 //Присваивание i-ой неизвестной 
                 y[i] = (b[TranspositionI[i]] - TempSum) / MtrxOfCoefs[TranspositionI[i], TranspositionJ[i]];
+                oper_f++;
             }
 
 
@@ -300,11 +339,14 @@ namespace NumMethods
                 for (int j = Dimension - 1; j > i; j--)
                 {
                     TempSum += MtrxOfCoefs[TranspositionI[i], TranspositionJ[j]] * x[TranspositionJ[j]];
+                    oper_f++;
                 }
                 //Присваивание i-ой неизвестной 
                 x[TranspositionJ[i]] = y[i] - TempSum;
+                oper_f++;
             }
-
+            TimeSpan sp = DateTime.Now - date;
+            time_f += sp.TotalMilliseconds;
         }
 
         public double FindDeterminant()
@@ -342,18 +384,27 @@ namespace NumMethods
             InvertMatrix1 = new double[Dimension, Dimension];
 
             e.Initialize();
+            
+
+
 
             for (int i = 0; i < Dimension; i++)
             {
                 if (i > 0)
                     e[i - 1] = 0;
                 e[i] = 1;
-                SolutionSLAE(e, ref x); 
+                SolutionSLAE(e, ref x);
+                oper_f++;
+                DateTime date = DateTime.Now;
                 for (int j = 0; j < Dimension; j++)
                     InvertMatrix1[j, i] = x[j];
+                oper_f++;
+                TimeSpan sp = DateTime.Now - date;
+                time_f += sp.TotalMilliseconds;
             }
 
             
+
             PrintDataTrans(InvertMatrix1);
         }
 
@@ -368,6 +419,10 @@ namespace NumMethods
             }
 
             InvertMatrix2 = new double[Dimension, Dimension];
+            DateTime date = DateTime.Now;
+            oper_t += Dimension * Dimension * Dimension;
+
+
             for (int i = 0; i < Dimension; i++)
             {
                 for (int j = 0; j < Dimension; j++)
@@ -390,9 +445,11 @@ namespace NumMethods
             for (int j = 0; j < Dimension; j++)
             {
                 InvertMatrix2[TranspositionI[j], TranspositionJ[j]] = 1 / InvertMatrix2[TranspositionI[j], TranspositionJ[j]];
+                oper_f++;
                 for (int i = j + 1; i < Dimension; i++)
                 {
                     InvertMatrix2[TranspositionI[i], TranspositionJ[j]] = -InvertMatrix2[TranspositionI[i], TranspositionJ[j]] * InvertMatrix2[TranspositionI[j], TranspositionJ[j]];
+                    oper_f++;
                 }
             }
 
@@ -403,6 +460,7 @@ namespace NumMethods
                 {
                     for (int j = k; j < Dimension; j++)
                     {
+                        oper_f++;
                         InvertMatrix2[TranspositionI[i], TranspositionJ[j]] += InvertMatrix2[TranspositionI[i], TranspositionJ[k - 1]] * InvertMatrix2[TranspositionI[k - 1], TranspositionJ[j]];
                     }
                 }
@@ -416,11 +474,13 @@ namespace NumMethods
                 {
                     for (int j = 0; j <= k; j++)
                     {
+                        oper_f++;
                         InvertMatrix2[TranspositionI[i], TranspositionJ[j]] += InvertMatrix2[TranspositionI[i], TranspositionJ[k + 1]] * InvertMatrix2[TranspositionI[k + 1], TranspositionJ[j]];
                     }
                 }
                 for (int j = 0; j <= k; j++)
                 {
+                    oper_f++;
                     InvertMatrix2[TranspositionI[k + 1], TranspositionJ[j]] = InvertMatrix2[TranspositionI[k + 1], TranspositionJ[j]] * InvertMatrix2[TranspositionI[k + 1], TranspositionJ[k + 1]];
                 }
             }
@@ -437,6 +497,7 @@ namespace NumMethods
                         for (int k = j; k < Dimension; k++)
                         {
                             sum += InvertMatrix2[TranspositionI[i], TranspositionJ[k]] * InvertMatrix2[TranspositionI[k], TranspositionJ[j]];
+                            oper_f++;
                         }
                     }
                     else if (i >= j)
@@ -444,10 +505,12 @@ namespace NumMethods
                         sum = InvertMatrix2[TranspositionI[i], TranspositionJ[j]];
                         for (int k = i + 1; k < Dimension; k++)
                         {
+                            oper_f++;
                             sum += InvertMatrix2[TranspositionI[i], TranspositionJ[k]] * InvertMatrix2[TranspositionI[k], TranspositionJ[j]];
                         }
                     }
                     InvertMatrix2[TranspositionI[i], TranspositionJ[j]] = sum;
+                    oper_f++;
                 }
             }
 
@@ -459,17 +522,25 @@ namespace NumMethods
             {
                 I[TranspositionI[i]] = i;
                 J[TranspositionJ[i]] = i;
+                oper_f++;
             }
             Console.WriteLine("Матрица А:\n");
             for (int i = 0; i < Dimension; i++)
             {
                 for (int j = 0; j < Dimension; j++)
                     Console.Write(InvertMatrix2[TranspositionI[J[i]], TranspositionJ[I[j]]] + " \t");
+                oper_f++;
                 Console.WriteLine();
             }
+            TimeSpan sp = DateTime.Now - date;
+            time_f += sp.TotalMilliseconds;
+
+
             Console.ReadKey();
             Console.Clear();
+
         }
+
 
         public void Experiment()
         {

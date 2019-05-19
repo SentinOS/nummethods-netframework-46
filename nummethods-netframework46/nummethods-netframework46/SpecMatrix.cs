@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace nummethods_netframework46
+namespace NumMethods
 {
     public class SpecMatrix
     {
-        double[,] A;
         int N;
         int Type;
         double arg;
-        public double[,] Matrix { get { return A; } }
+        public double[,] Matrix { get; private set; }
         public SpecMatrix(int n, int t)
         {
             N = n;
@@ -79,32 +74,32 @@ namespace nummethods_netframework46
         }
         private void Matrix1()
         {
-            A = new double[N, N];
+            Matrix = new double[N, N];
             for (int i = 1; i <= N; i++)
             {
                 for (int j = 1; j <= N; j++)
                 {
-                    A[i - 1, j - 1] = 1 / ((double)i + (double)j - 1);
+                    Matrix[i - 1, j - 1] = 1 / ((double)i + (double)j - 1);
                 }
             }
         }
         private void Matrix2()
         {
             N = 20;
-            A = new double[N, N];
+            Matrix = new double[N, N];
             for (int i = 0; i < 20; i++)
             {
                 if (i != 19)
                 {
-                    A[i, i + 1] = 1;
+                    Matrix[i, i + 1] = 1;
                 }
-                A[i, i] = 1;
+                Matrix[i, i] = 1;
             }
         }
         private void Matrix3()
         {
             N = 7;
-            A = new double[,] {{5,4,7,5,6,7,5},
+            Matrix = new double[,] {{5,4,7,5,6,7,5},
                                {4,12,8,7,8,8,6},
                                {7,8,10,9,8,7,7},
                                {5,7,9,11,9,7,5},
@@ -114,44 +109,44 @@ namespace nummethods_netframework46
         }
         private void Matrix4()
         {
-            A = new double[N, N];
+            Matrix = new double[N, N];
             for (int i = 1; i <= N; i++)
             {
                 for (int j = 1; j <= N; j++)
                 {
                     if (i == j)
                     {
-                        A[i - 1, j - 1] = 0.01 / (((double)N - (double)i + 1) / ((double)i + 1));
+                        Matrix[i - 1, j - 1] = 0.01 / (((double)N - (double)i + 1) / ((double)i + 1));
                     }
                     else if (i < j)
                     {
-                        A[i - 1, j - 1] = 0;
+                        Matrix[i - 1, j - 1] = 0;
                     }
                     else
                     {
-                        A[i - 1, j - 1] = i * (N - j);
+                        Matrix[i - 1, j - 1] = i * (N - j);
                     }
                 }
             }
         }
         private void Matrix5()
         {
-            A = new double[N, N];
+            Matrix = new double[N, N];
             for (int i = 1; i <= N; i++)
             {
                 for (int j = 1; j <= N; j++)
                 {
                     if (i == j)
                     {
-                        A[i - 1, j - 1] = 0.01 / (((double)N - (double)i + 1) / ((double)i + 1));
+                        Matrix[i - 1, j - 1] = 0.01 / (((double)N - (double)i + 1) / ((double)i + 1));
                     }
                     else if (i < j)
                     {
-                        A[i - 1, j - 1] = j * (N - i);
+                        Matrix[i - 1, j - 1] = j * (N - i);
                     }
                     else
                     {
-                        A[i - 1, j - 1] = i * (N - j);
+                        Matrix[i - 1, j - 1] = i * (N - j);
                     }
                 }
             }
@@ -162,7 +157,7 @@ namespace nummethods_netframework46
             {
                 return 1 / Math.Sin(arg);
             }
-            catch (Exception e)
+            catch
             {
                 return 0;
             }
@@ -173,7 +168,7 @@ namespace nummethods_netframework46
             {
                 return Math.Sin(arg) / Math.Cos(arg);
             }
-            catch (Exception e)
+            catch
             {
                 return 0;
             }
@@ -181,7 +176,7 @@ namespace nummethods_netframework46
         private void Matrix6()
         {
             N = 8;
-            A = new double[N, N];
+            Matrix = new double[N, N];
             double[,] T = new double[,] { { 1, 1 }, { 1, 1 } };
             double[,] R = new double[,] { { ctg(arg), cosec(arg) }, { -cosec(arg), ctg(arg) } };
             double[,] S = new double[,] { { 1 - ctg(arg), cosec(arg) }, { 1 - cosec(arg), 1 + ctg(arg) } };
@@ -215,10 +210,10 @@ namespace nummethods_netframework46
         }
         private void Matrix7()
         {
-            A = new double[N, N];
+            Matrix = new double[N, N];
             for (int i = 1; i <= N; i++)
             {
-                A[i - 1, i - 1] = Math.Pow(arg, Math.Abs((double)N - (double)i * 2) / 2);
+                Matrix[i - 1, i - 1] = Math.Pow(arg, Math.Abs((double)N - (double)i * 2) / 2);
             }
             for (int i = 1; i <= N; i++)
             {
@@ -228,15 +223,15 @@ namespace nummethods_netframework46
                     {
                         if (i == 1 || j == 1)
                         {
-                            A[i - 1, j - 1] = Matrix[0, 0] / Math.Pow(arg, (double)j);
+                            Matrix[i - 1, j - 1] = Matrix[0, 0] / Math.Pow(arg, (double)j);
                         }
                         else if (i == N || j == N)
                         {
-                            A[i - 1, j - 1] = A[N - 1, N - 1] / Math.Pow(arg, (double)j);
+                            Matrix[i - 1, j - 1] = Matrix[N - 1, N - 1] / Math.Pow(arg, (double)j);
                         }
                         else
                         {
-                            A[i - 1, j - 1] = 0;
+                            Matrix[i - 1, j - 1] = 0;
                         }
                     }
                 }
@@ -244,30 +239,30 @@ namespace nummethods_netframework46
         }
         private void Matrix8()
         {
-            A = new double[N, N];
+            Matrix = new double[N, N];
             for (int i = 1; i <= N; i++)
             {
                 for (int j = 1; j <= N; j++)
                 {
-                    A[i - 1, j - 1] = Math.Exp((double)i * (double)j * arg);
+                    Matrix[i - 1, j - 1] = Math.Exp((double)i * (double)j * arg);
                 }
             }
         }
         private void Matrix9()
         {
-            A = new double[N, N];
+            Matrix = new double[N, N];
             for (int i = 1; i <= N; i++)
             {
                 for (int j = 1; j <= N; j++)
                 {
-                    A[i - 1, j - 1] = arg + Math.Log((double)i * (double)j, 2);
+                    Matrix[i - 1, j - 1] = arg + Math.Log((double)i * (double)j, 2);
                 }
             }
         }
         private void Matrix10()
         {
             N = 4;
-            A = new double[,] {{0.9143*Math.Pow(10,-4),0,0,0},
+            Matrix = new double[,] {{0.9143*Math.Pow(10,-4),0,0,0},
                                      {0.8762,0.756*Math.Pow(10,-4),0,0},
                                      {0.794,0.8143,0.9504*Math.Pow(10,-4),0},
                                      {0.8017,0.6123,0.7165,0.7123*Math.Pow(10,-4)} };
@@ -275,12 +270,12 @@ namespace nummethods_netframework46
         private void Matrix11()
         {
             Random rnd = new Random();
-            A = new double[N, N];
+            Matrix = new double[N, N];
             for (int i = 0; i < N; i++)
             {
                 for (int j = 0; j < N; j++)
                 {
-                    A[i, j] = rnd.NextDouble() * 100 - 50;
+                    Matrix[i, j] = rnd.NextDouble() * 100 - 50;
                 }
             }
         }

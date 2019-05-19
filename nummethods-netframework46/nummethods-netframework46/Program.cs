@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace NumMethods
 {
@@ -39,47 +41,46 @@ namespace NumMethods
                 {
                     case 1:
                         array.InsertData();
-                        
                         break;
 
                     case 2:
                         array.MatrixFactorization();
-                        
+
                         break;
 
                     case 3:
                         array.SolutionSLAE();
-                        
+
                         break;
 
                     case 4:
                         array.FindDeterminant();
-                        
+
                         break;
 
                     case 5:
                         array.FirstMatrixInversion();
-                        
+
                         break;
 
                     case 6:
                         array.SecondMatrixInversion();
-                        
+
                         break;
 
                     case 7:
                         array.Experiment();
-                        
+
                         break;
 
                     case 8:
                         array.Experiment();
-                        
+
                         break;
 
                     case 9:
                         array.Experiment();
-                        
+
                         break;
 
                     case 10:
@@ -100,7 +101,7 @@ namespace NumMethods
 
         static void Main(string[] args)
         {
-            Array array = new Array();
+            var array = new Array();
             Menu(array);
         }
     }

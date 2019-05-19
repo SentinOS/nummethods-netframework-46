@@ -5,7 +5,6 @@ namespace NumMethods
     public class Array
     {
 
-        
         private double[,] MtrxOfCoefs; //A
 
         public bool AFactorized { get; set; }
@@ -125,7 +124,7 @@ namespace NumMethods
             for (int i = 0; i < Dimension; i++)
             {
                 for (int j = 0; j < Dimension; j++)
-                    Console.Write(x[i, j] + " \t");
+                    Console.Write(x[i, j].ToString("f2") + " \t");
                 Console.WriteLine();
             }
 
@@ -136,7 +135,7 @@ namespace NumMethods
         public void MatrixFactorization()
         {
 
-            oper_f = 0;                         //Файктическое число оперций.
+            oper_f = 0;                         //Фактическое число оперций.
             oper_t = 0;                         //Теоретическое число операций.
             DateTime date = DateTime.Now;
 
@@ -545,9 +544,271 @@ namespace NumMethods
         public void Experiment()
         {
             Console.Clear();
-            Console.WriteLine("Заглушка. Когда-нибудь здесь что-нибудь да будет.");
-            Console.ReadKey();
+            for (int type = 1; type < 12; type++)
+            {
+                genMatrix(type);
+                PrintDataTrans(MtrxOfCoefs);
+            }
             Console.Clear();
+        }
+
+        private void genMatrix(int type)
+        {
+            switch (type)
+            {
+                case 1:
+                    Matrix1();
+                    break;
+                case 2:
+                    Matrix2();
+                    break;
+                case 3:
+                    Matrix3();
+                    break;
+                case 4:
+                    Matrix4();
+                    break;
+                case 5:
+                    Matrix5();
+                    break;
+                case 6:
+                    Matrix6();
+                    break;
+                case 7:
+                    Matrix7();
+                    break;
+                case 8:
+                    Matrix8();
+                    break;
+                case 9:
+                    Matrix9();
+                    break;
+                case 10:
+                    Matrix10();
+                    break;
+                case 11:
+                    Matrix11();
+                    break;
+
+            }
+        }
+        private void Matrix1()
+        {
+            Dimension = 5;
+            MtrxOfCoefs = new double[Dimension, Dimension];
+            for (int i = 1; i <= Dimension; i++)
+            {
+                for (int j = 1; j <= Dimension; j++)
+                {
+                    MtrxOfCoefs[i - 1, j - 1] = 1 / ((double)i + (double)j - 1);
+                }
+            }
+        }
+        private void Matrix2()
+        {
+            Dimension = 20;
+            MtrxOfCoefs = new double[Dimension, Dimension];
+            for (int i = 0; i < 20; i++)
+            {
+                if (i != 19)
+                {
+                    MtrxOfCoefs[i, i + 1] = 1;
+                }
+                MtrxOfCoefs[i, i] = 1;
+            }
+        }
+        private void Matrix3()
+        {
+            Dimension = 7;
+            MtrxOfCoefs = new double[,] {{5,4,7,5,6,7,5},
+                               {4,12,8,7,8,8,6},
+                               {7,8,10,9,8,7,7},
+                               {5,7,9,11,9,7,5},
+                               {6,8,8,9,10,8,9},
+                               {7,8,7,7,8,10,10},
+                               {5,6,7,5,9,10,10}};
+        }
+        private void Matrix4()
+        {
+            Dimension = 5;
+            MtrxOfCoefs = new double[Dimension, Dimension];
+            for (int i = 1; i <= Dimension; i++)
+            {
+                for (int j = 1; j <= Dimension; j++)
+                {
+                    if (i == j)
+                    {
+                        MtrxOfCoefs[i - 1, j - 1] = 0.01 / (((double)Dimension - (double)i + 1) / ((double)i + 1));
+                    }
+                    else if (i < j)
+                    {
+                        MtrxOfCoefs[i - 1, j - 1] = 0;
+                    }
+                    else
+                    {
+                        MtrxOfCoefs[i - 1, j - 1] = i * (Dimension - j);
+                    }
+                }
+            }
+        }
+        private void Matrix5()
+        {
+            Dimension = 5;
+            MtrxOfCoefs = new double[Dimension, Dimension];
+            for (int i = 1; i <= Dimension; i++)
+            {
+                for (int j = 1; j <= Dimension; j++)
+                {
+                    if (i == j)
+                    {
+                        MtrxOfCoefs[i - 1, j - 1] = 0.01 / (((double)Dimension - (double)i + 1) / ((double)i + 1));
+                    }
+                    else if (i < j)
+                    {
+                        MtrxOfCoefs[i - 1, j - 1] = j * (Dimension - i);
+                    }
+                    else
+                    {
+                        MtrxOfCoefs[i - 1, j - 1] = i * (Dimension - j);
+                    }
+                }
+            }
+        }
+        double cosec(double arg)
+        {
+            try
+            {
+                return 1 / Math.Sin(arg);
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+        double ctg(double arg)
+        {
+            try
+            {
+                return Math.Sin(arg) / Math.Cos(arg);
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+        private void Matrix6()
+        {
+            double arg = 0;
+            Dimension = 8;
+            MtrxOfCoefs = new double[Dimension, Dimension];
+            double[,] T = new double[,] { { 1, 1 }, { 1, 1 } };
+            double[,] R = new double[,] { { ctg(arg), cosec(arg) }, { -cosec(arg), ctg(arg) } };
+            double[,] S = new double[,] { { 1 - ctg(arg), cosec(arg) }, { 1 - cosec(arg), 1 + ctg(arg) } };
+            for (int i = 0; i < Dimension; i += 2)
+            {
+                for (int j = 0; j < Dimension; j += 2)
+                {
+                    double[,] V = null;
+                    if (i == j)
+                    {
+                        V = R;
+                    }
+                    else if (i == j + 2 || i + 2 == j)
+                    {
+                        V = S;
+                    }
+                    else
+                    {
+                        V = T;
+                    }
+                    for (int k = 0; k < 2; k++)
+                    {
+                        for (int t = 0; t < 2; t++)
+                        {
+                            MtrxOfCoefs[i + k, j + t] = V[k, t];
+                        }
+                    }
+                }
+
+            }
+        }
+        private void Matrix7()
+        {
+            Dimension = 5;
+            MtrxOfCoefs = new double[Dimension, Dimension];
+            double arg = 0;
+            for (int i = 1; i <= Dimension; i++)
+            {
+                MtrxOfCoefs[i - 1, i - 1] = Math.Pow(arg, Math.Abs((double)Dimension - (double)i * 2) / 2);
+            }
+            for (int i = 1; i <= Dimension; i++)
+            {
+                for (int j = 1; j <= Dimension; j++)
+                {
+                    if (i != j)
+                    {
+                        if (i == 1 || j == 1)
+                        {
+                            MtrxOfCoefs[i - 1, j - 1] = MtrxOfCoefs[0, 0] / Math.Pow(arg, (double)j);
+                        }
+                        else if (i == Dimension || j == Dimension)
+                        {
+                            MtrxOfCoefs[i - 1, j - 1] = MtrxOfCoefs[Dimension - 1, Dimension - 1] / Math.Pow(arg, (double)j);
+                        }
+                        else
+                        {
+                            MtrxOfCoefs[i - 1, j - 1] = 0;
+                        }
+                    }
+                }
+            }
+        }
+        private void Matrix8()
+        {
+            Dimension = 5;
+            MtrxOfCoefs = new double[Dimension, Dimension];
+            double arg = 0;
+            for (int i = 1; i <= Dimension; i++)
+            {
+                for (int j = 1; j <= Dimension; j++)
+                {
+                    MtrxOfCoefs[i - 1, j - 1] = Math.Exp((double)i * (double)j * arg);
+                }
+            }
+        }
+        private void Matrix9()
+        {
+            Dimension = 5;
+            MtrxOfCoefs = new double[Dimension, Dimension];     
+            for (int i = 1; i <= Dimension; i++)
+            {
+                for (int j = 1; j <= Dimension; j++)
+                {
+                    double arg = 0;
+                    MtrxOfCoefs[i - 1, j - 1] = arg + Math.Log((double)i * (double)j, 2);
+                }
+            }
+        }
+        private void Matrix10()
+        {
+            Dimension = 4;
+            MtrxOfCoefs = new double[,] {{0.9143*Math.Pow(10,-4),0,0,0},
+                                     {0.8762,0.756*Math.Pow(10,-4),0,0},
+                                     {0.794,0.8143,0.9504*Math.Pow(10,-4),0},
+                                     {0.8017,0.6123,0.7165,0.7123*Math.Pow(10,-4)} };
+        }
+        private void Matrix11()
+        {
+            Random rnd = new Random();
+            Dimension = 5;
+            MtrxOfCoefs = new double[Dimension, Dimension];
+            for (int i = 0; i < Dimension; i++)
+            {
+                for (int j = 0; j < Dimension; j++)
+                {
+                    MtrxOfCoefs[i, j] = rnd.NextDouble() * 100 - 50;
+                }
+            }
         }
     }
 }

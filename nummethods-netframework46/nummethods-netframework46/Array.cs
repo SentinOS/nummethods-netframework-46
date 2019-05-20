@@ -54,8 +54,8 @@ namespace NumMethods
             this.MtrxOfCoefs = new double[Dimension, Dimension];
             TranspositionJ = new int[Dimension];
             TranspositionI = new int[Dimension];
-            for (int i=0;i<Dimension;i++)
-            { 
+            for (int i = 0; i < Dimension; i++)
+            {
                 TranspositionJ[i] = i;
                 TranspositionI[i] = i;
             }
@@ -64,7 +64,7 @@ namespace NumMethods
             for (int i = 0; i < Dimension; i++)
                 for (int j = 0; j < Dimension; j++)
                 {
-                    
+
                     try
                     {
                         MtrxOfCoefs[i, j] = double.Parse(Console.ReadLine());
@@ -138,14 +138,14 @@ namespace NumMethods
             oper_f = 0;                         //Фактическое число оперций.
             oper_t = 0;                         //Теоретическое число операций.
             DateTime date = DateTime.Now;
-
+            TranspositionJ = new int[Dimension];
+            TranspositionI = new int[Dimension];
             Znak = 1;
-            for (int i = 0; i < Dimension; i++) { 
+            for (int i = 0; i < Dimension; i++)
+            {
                 TranspositionJ[i] = i;
                 TranspositionI[i] = i;
             }
-
-            oper_t = Dimension * Dimension * Dimension;
 
             for (int k = 0; k < Dimension; k++)
             {
@@ -155,8 +155,8 @@ namespace NumMethods
 
                 for (int i = k; i < Dimension; i++)
                 {
-                    for(int j=k;j<Dimension;j++)
-                    { 
+                    for (int j = k; j < Dimension; j++)
+                    {
                         if (Math.Abs(MtrxOfCoefs[TranspositionI[i], TranspositionJ[j]]) > max)
                         {
                             max = Math.Abs(MtrxOfCoefs[TranspositionI[i], TranspositionJ[j]]);
@@ -188,12 +188,15 @@ namespace NumMethods
                     oper_f++;
                 }
                 //////////////////////////////////////////////
-                for (int j = k + 1; j < Dimension; j++) {                    
+                for (int j = k + 1; j < Dimension; j++)
+                {
                     MtrxOfCoefs[TranspositionI[k], TranspositionJ[j]] /= MtrxOfCoefs[TranspositionI[k], TranspositionJ[k]];
                     oper_f++;
                 }
-                for (int i = k + 1; i < Dimension; i++) { 
-                    for (int j = k + 1; j < Dimension; j++) { 
+                for (int i = k + 1; i < Dimension; i++)
+                {
+                    for (int j = k + 1; j < Dimension; j++)
+                    {
                         MtrxOfCoefs[TranspositionI[i], TranspositionJ[j]] -= MtrxOfCoefs[TranspositionI[i], TranspositionJ[k]] * MtrxOfCoefs[TranspositionI[k], TranspositionJ[j]];
                         oper_f++;
                     }
@@ -202,51 +205,62 @@ namespace NumMethods
             TimeSpan sp = DateTime.Now - date;      //Фиксируем время окончания LU разложения
             time_f = sp.TotalMilliseconds;
 
-            Console.Clear();
+            //Console.Clear();
 
             AFactorized = true;
-            Console.WriteLine("Матрица факторизирована.\n");
-            Console.ReadKey();
-            Console.Clear();
+            //Console.WriteLine("Матрица факторизирована.\n");
+            //Console.ReadKey();
+            //Console.Clear();
 
         }
 
-        public void SolutionSLAE()
+        public void SolutionSLAE(bool accuracy)
         {
-            Console.Clear();
+            //Console.Clear();
             //Проверка на факторизованность матрицы
             if (!AFactorized)
             {
-                Console.Clear();
+                //Console.Clear();
                 MatrixFactorization();
-                Console.WriteLine("Матрица была не факторизирована, факторизировали.\n");
+                //Console.WriteLine("Матрица была не факторизирована, факторизировали.\n");
             }
-            Console.WriteLine("Введите вектор свободных членов: \n");
-
-            DateTime date = DateTime.Now;           //Сохраняем время начала решения СЛАУ
-            oper_t += Dimension * Dimension;
-
+            //Console.WriteLine("Введите вектор свободных членов: \n");
+           
+            oper_t += (Dimension * Dimension * Dimension)/3;
             //Заполняем вектор свободных членов данными
             this.VctrOfFreeMembers = new double[Dimension];
-            for (int i = 0; i < Dimension; i++)
+            VctrOfVars = new double[Dimension];
+            //for (int i = 0; i < Dimension; i++)
+            //{
+            //    try
+            //    {
+            //        VctrOfFreeMembers[i] = double.Parse(Console.ReadLine());
+            //    }
+
+            //    catch
+            //    {
+            //        Console.WriteLine("Неправильно введен элемент. Введите заново!");
+            //        VctrOfFreeMembers[i] = double.Parse(Console.ReadLine());
+            //    }
+
+            //}
+
+            if (accuracy)
             {
-                try
-                {
-                    VctrOfFreeMembers[i] = double.Parse(Console.ReadLine());
-                }
+                var rnd = new Random();
 
-                catch
+                for (int j = 0; j < Dimension; j++)
                 {
-                    Console.WriteLine("Неправильно введен элемент. Введите заново!");
-                    VctrOfFreeMembers[i] = double.Parse(Console.ReadLine());
+                    VctrOfFreeMembers[j] = rnd.NextDouble() * 100 - 50;
                 }
-
             }
+            DateTime date = DateTime.Now;           //Сохраняем время начала решения СЛАУ
+
 
             double[] x = new double[Dimension];
             double[] y = new double[Dimension];
 
-            
+
 
             ///////////////////////////////////////////////
             //Создаем дополнительную переменную для суммирования известных членов в строках матрицы
@@ -273,7 +287,7 @@ namespace NumMethods
             {
                 TempSum = 0;
                 //Высчитывание суммы всех известных членов и коэффициентов при них до I-ого столбца
-                for (int j = i+1; j < Dimension; j++)
+                for (int j = i + 1; j < Dimension; j++)
                 {
                     TempSum += MtrxOfCoefs[TranspositionI[i], TranspositionJ[j]] * x[TranspositionJ[j]];
                     oper_f++;
@@ -286,13 +300,13 @@ namespace NumMethods
             TimeSpan sp = DateTime.Now - date;
             time_f += sp.TotalMilliseconds;
             //Вывод вектора с неизвестными
-            Console.WriteLine("Вектор неизвестных X:\n");
-            for (uint i = 0; i < Dimension; i++)
-                Console.WriteLine(x[i] + "\n");
+            //Console.WriteLine("Вектор неизвестных X:\n");
+            //for (uint i = 0; i < Dimension; i++)
+            //    Console.WriteLine(x[i] + "\n");
 
-
-            Console.ReadKey();
-            Console.Clear();
+            x.CopyTo(VctrOfVars, 0);
+            //Console.ReadKey();
+            //Console.Clear();
         }
 
         public void SolutionSLAE(double[] b, ref double[] x)
@@ -383,7 +397,7 @@ namespace NumMethods
             InvertMatrix1 = new double[Dimension, Dimension];
 
             e.Initialize();
-            
+
 
 
 
@@ -402,7 +416,7 @@ namespace NumMethods
                 time_f += sp.TotalMilliseconds;
             }
 
-            
+
 
             PrintDataTrans(InvertMatrix1);
         }
@@ -514,7 +528,7 @@ namespace NumMethods
             }
 
             //Выполняем обратную перестановку
-            
+
             int[] I = new int[Dimension];
             int[] J = new int[Dimension];
             for (int i = 0; i < Dimension; i++)
@@ -540,11 +554,14 @@ namespace NumMethods
 
         }
 
-
+        public void Experiment1()
+        {
+            genMatrix(11);
+        }
         public void Experiment()
         {
             Console.Clear();
-            for (int type = 1; type < 12; type++)
+            for (int type = 1; type < 11; type++)
             {
                 genMatrix(type);
                 PrintDataTrans(MtrxOfCoefs);
@@ -557,7 +574,11 @@ namespace NumMethods
             switch (type)
             {
                 case 1:
-                    Matrix1();
+                    for (int n = 4; n < 40; n += 4)
+                    {
+                        Matrix1(n);
+
+                    }
                     break;
                 case 2:
                     Matrix2();
@@ -566,35 +587,49 @@ namespace NumMethods
                     Matrix3();
                     break;
                 case 4:
-                    Matrix4();
+                    for (int n = 4; n < 40; n += 4)
+                        Matrix4(n);
                     break;
                 case 5:
-                    Matrix5();
+                    for (int n = 4; n < 40; n += 4)
+                        Matrix5(n);
                     break;
                 case 6:
                     Matrix6();
                     break;
                 case 7:
-                    Matrix7();
+                    for (int n = 4; n < 40; n += 4)
+                        Matrix7(n);
                     break;
                 case 8:
-                    Matrix8();
+                    for (int n = 4; n < 40; n += 4)
+                        Matrix8(n);
                     break;
                 case 9:
-                    Matrix9();
+                    for (int n = 4; n < 40; n += 4)
+                        Matrix9(n);
                     break;
                 case 10:
                     Matrix10();
                     break;
                 case 11:
-                    Matrix11();
+                    for (int n = 5; n < 100; n += 5)
+                    {
+                        AFactorized = false;
+                        Matrix11(n);
+                        SolutionSLAE(true);
+                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");                        
+                        Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                    }
+                    Console.ReadKey();
+                    Console.Clear();
                     break;
 
             }
         }
-        private void Matrix1()
+        private void Matrix1(int n)
         {
-            Dimension = 5;
+            Dimension = n;
             MtrxOfCoefs = new double[Dimension, Dimension];
             for (int i = 1; i <= Dimension; i++)
             {
@@ -628,9 +663,9 @@ namespace NumMethods
                                {7,8,7,7,8,10,10},
                                {5,6,7,5,9,10,10}};
         }
-        private void Matrix4()
+        private void Matrix4(int n)
         {
-            Dimension = 5;
+            Dimension = n;
             MtrxOfCoefs = new double[Dimension, Dimension];
             for (int i = 1; i <= Dimension; i++)
             {
@@ -651,9 +686,9 @@ namespace NumMethods
                 }
             }
         }
-        private void Matrix5()
+        private void Matrix5(int n)
         {
-            Dimension = 5;
+            Dimension = n;
             MtrxOfCoefs = new double[Dimension, Dimension];
             for (int i = 1; i <= Dimension; i++)
             {
@@ -698,7 +733,7 @@ namespace NumMethods
         }
         private void Matrix6()
         {
-            double arg = 0;
+            double arg = Math.PI;
             Dimension = 8;
             MtrxOfCoefs = new double[Dimension, Dimension];
             double[,] T = new double[,] { { 1, 1 }, { 1, 1 } };
@@ -732,9 +767,9 @@ namespace NumMethods
 
             }
         }
-        private void Matrix7()
+        private void Matrix7(int n)
         {
-            Dimension = 5;
+            Dimension = n;
             MtrxOfCoefs = new double[Dimension, Dimension];
             double arg = 0;
             for (int i = 1; i <= Dimension; i++)
@@ -763,9 +798,9 @@ namespace NumMethods
                 }
             }
         }
-        private void Matrix8()
+        private void Matrix8(int n)
         {
-            Dimension = 5;
+            Dimension = n;
             MtrxOfCoefs = new double[Dimension, Dimension];
             double arg = 0;
             for (int i = 1; i <= Dimension; i++)
@@ -776,10 +811,10 @@ namespace NumMethods
                 }
             }
         }
-        private void Matrix9()
+        private void Matrix9(int n)
         {
-            Dimension = 5;
-            MtrxOfCoefs = new double[Dimension, Dimension];     
+            Dimension = n;
+            MtrxOfCoefs = new double[Dimension, Dimension];
             for (int i = 1; i <= Dimension; i++)
             {
                 for (int j = 1; j <= Dimension; j++)
@@ -797,10 +832,10 @@ namespace NumMethods
                                      {0.794,0.8143,0.9504*Math.Pow(10,-4),0},
                                      {0.8017,0.6123,0.7165,0.7123*Math.Pow(10,-4)} };
         }
-        private void Matrix11()
+        private void Matrix11(int n)
         {
             Random rnd = new Random();
-            Dimension = 5;
+            Dimension = n;
             MtrxOfCoefs = new double[Dimension, Dimension];
             for (int i = 0; i < Dimension; i++)
             {
@@ -809,6 +844,34 @@ namespace NumMethods
                     MtrxOfCoefs[i, j] = rnd.NextDouble() * 100 - 50;
                 }
             }
+        }
+
+        private double AccuracySLAE()
+        {
+            SolutionSLAE(true);
+            double[] savedSolution = new double[Dimension];
+            VctrOfVars.CopyTo(savedSolution, 0);
+            for (int i = 0; i < Dimension; i++)
+                VctrOfFreeMembers[i] = (double)i + 1;
+            SolutionSLAE(false);
+            double maxAccuracy = 0;
+            for (int i = 0; i < Dimension; i++)
+            {
+                if ((VctrOfVars[i] - savedSolution[i]) > maxAccuracy)
+                    maxAccuracy = VctrOfVars[i] - savedSolution[i];
+            }
+
+            return maxAccuracy;
+        }
+
+        private void AccuracyFirstInv()
+        {
+
+        }
+
+        private void AccuracySecondInv()
+        {
+
         }
     }
 }

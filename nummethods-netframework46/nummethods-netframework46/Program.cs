@@ -49,7 +49,7 @@ namespace NumMethods
                         break;
 
                     case 3:
-                        array.SolutionSLAE();
+                        array.SolutionSLAE(true);
 
                         break;
 
@@ -69,7 +69,7 @@ namespace NumMethods
                         break;
 
                     case 7:
-                        array.Experiment();
+                        array.Experiment1();
 
                         break;
 

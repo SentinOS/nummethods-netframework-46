@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace NumMethods
 {
@@ -557,6 +557,8 @@ namespace NumMethods
         public void Experiment1()
         {
             genMatrix(11);
+            Console.ReadKey();
+            Console.Clear();
         }
         public void Experiment()
         {
@@ -569,6 +571,21 @@ namespace NumMethods
             Console.Clear();
         }
 
+        public void Experiment2()
+        {
+            Console.Clear();
+            for (int type = 1; type < 11; type++)
+            {
+                genMatrix(type);
+                Console.WriteLine($"{type}-----------------------------------------{type}");
+                // PrintDataTrans(MtrxOfCoefs);
+            }
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+
+
         private void genMatrix(int type)
         {
             switch (type)
@@ -576,44 +593,101 @@ namespace NumMethods
                 case 1:
                     for (int n = 4; n < 40; n += 4)
                     {
+                        AFactorized = false;
                         Matrix1(n);
-
+                        SolutionSLAE(true);
+                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
                     }
                     break;
                 case 2:
-                    Matrix2();
+                    {
+                        AFactorized = false;
+                        Matrix2();
+                        SolutionSLAE(true);
+                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                    }
                     break;
                 case 3:
-                    Matrix3();
+                    {
+                        AFactorized = false;
+                        Matrix3();
+                        SolutionSLAE(true);
+                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                    }
                     break;
                 case 4:
                     for (int n = 4; n < 40; n += 4)
+                    {
+                        AFactorized = false;
                         Matrix4(n);
+                        SolutionSLAE(true);
+                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                    }
                     break;
                 case 5:
                     for (int n = 4; n < 40; n += 4)
+                    {
+                        AFactorized = false;
                         Matrix5(n);
+                        SolutionSLAE(true);
+                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                    }
                     break;
                 case 6:
-                    Matrix6();
+                    {
+                        AFactorized = false;
+                        Matrix6();
+                        SolutionSLAE(true);
+                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                    }
                     break;
                 case 7:
                     for (int n = 4; n < 40; n += 4)
+                    {
+                        AFactorized = false;
                         Matrix7(n);
+                        SolutionSLAE(true);
+                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                    }
                     break;
                 case 8:
                     for (int n = 4; n < 40; n += 4)
+                    {
+                        AFactorized = false;
                         Matrix8(n);
+                        SolutionSLAE(true);
+                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                    }
                     break;
                 case 9:
                     for (int n = 4; n < 40; n += 4)
+                    {
+                        AFactorized = false;
                         Matrix9(n);
+                        SolutionSLAE(true);
+                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                    }
                     break;
                 case 10:
-                    Matrix10();
+                    {
+                        AFactorized = false;
+                        Matrix10();
+                        SolutionSLAE(true);
+                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                    }
                     break;
                 case 11:
-                    for (int n = 5; n <= 100; n += 5)
+                    for (int n = 5; n < 100; n += 5)
                     {
                         AFactorized = false;
                         Matrix11(n);
@@ -621,8 +695,6 @@ namespace NumMethods
                         Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");                        
                         Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
                     }
-                    Console.ReadKey();
-                    Console.Clear();
                     break;
 
             }

@@ -613,7 +613,7 @@ namespace NumMethods
                     Matrix10();
                     break;
                 case 11:
-                    for (int n = 5; n <= 100; n += 5)
+                    for (int n = 5; n < 100; n += 5)
                     {
                         AFactorized = false;
                         Matrix11(n);

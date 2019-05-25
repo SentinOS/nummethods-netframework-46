@@ -74,12 +74,12 @@ namespace NumMethods
                         break;
 
                     case 8:
-                        array.Experiment();
+                        array.Experiment2();
 
                         break;
 
                     case 9:
-                        array.Experiment();
+                        array.Experiment3();
 
                         break;
 

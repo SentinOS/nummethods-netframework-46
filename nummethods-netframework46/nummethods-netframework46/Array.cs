@@ -151,18 +151,16 @@ namespace NumMethods
             {
                 int iMax = k;
                 int jMax = k;
-                double max = Math.Abs(MtrxOfCoefs[TranspositionI[k], TranspositionJ[k]]);
 
                 for (int i = k; i < Dimension; i++)
                 {
                     for (int j = k; j < Dimension; j++)
                     {
-                        if (Math.Abs(MtrxOfCoefs[TranspositionI[i], TranspositionJ[j]]) > max)
+                        if (Math.Abs(MtrxOfCoefs[TranspositionI[i], TranspositionJ[j]]) > Math.Abs(MtrxOfCoefs[TranspositionI[k], TranspositionJ[k]]))
                         {
-                            max = Math.Abs(MtrxOfCoefs[TranspositionI[i], TranspositionJ[j]]);
                             iMax = i;
                             jMax = j;
-                            oper_f++;
+                            //oper_f++;
                         }
                     }
                     //if (Math.Abs(MtrxOfCoefs[k, Transposition[k]]) < 2 * Double.Epsilon)
@@ -177,7 +175,7 @@ namespace NumMethods
                     TranspositionI[k] = TranspositionI[iMax];
                     TranspositionI[iMax] = buf;
                     Znak *= -1;
-                    oper_f++;
+                    //oper_f++;
                 }
                 if (jMax != k)
                 {
@@ -185,7 +183,7 @@ namespace NumMethods
                     TranspositionJ[k] = TranspositionJ[jMax];
                     TranspositionJ[jMax] = buf;
                     Znak *= -1;
-                    oper_f++;
+                    //oper_f++;
                 }
                 //////////////////////////////////////////////
                 for (int j = k + 1; j < Dimension; j++)
@@ -225,10 +223,9 @@ namespace NumMethods
                 //Console.WriteLine("Матрица была не факторизирована, факторизировали.\n");
             }
             //Console.WriteLine("Введите вектор свободных членов: \n");
-           
-            oper_t += (Dimension * Dimension * Dimension)/3;
+
+            oper_t += (Dimension * Dimension * Dimension) / 3;
             //Заполняем вектор свободных членов данными
-            this.VctrOfFreeMembers = new double[Dimension];
             VctrOfVars = new double[Dimension];
             //for (int i = 0; i < Dimension; i++)
             //{
@@ -272,7 +269,7 @@ namespace NumMethods
                 TempSum = 0;
 
                 //Высчитывание суммы всех известных членов и коэффициентов при них до I-ого столбца
-                for (int j = 0; j < i; j++)
+                for (int j = 0; j <= i; j++)
                 {
                     TempSum += MtrxOfCoefs[TranspositionI[i], TranspositionJ[j]] * y[j];
                     oper_f++;
@@ -294,7 +291,7 @@ namespace NumMethods
                 }
                 //Присваивание i-ой неизвестной 
                 x[TranspositionJ[i]] = y[i] - TempSum;
-                oper_f++;
+                //oper_f++;
             }
 
             TimeSpan sp = DateTime.Now - date;
@@ -311,19 +308,18 @@ namespace NumMethods
 
         public void SolutionSLAE(double[] b, ref double[] x)
         {
-            //Проверка на факторизованность матрицы
-            if (!AFactorized)
-            {
-                Console.Clear();
-                MatrixFactorization();
-                Console.WriteLine("Матрица была не факторизирована, факторизировали.\n");
-            }
+            ////Проверка на факторизованность матрицы
+            //if (!AFactorized)
+            //{
+            //    Console.Clear();
+            //    MatrixFactorization();
+            //    Console.WriteLine("Матрица была не факторизирована, факторизировали.\n");
+            //}
 
             double[] y = new double[Dimension];
 
 
             DateTime date = DateTime.Now;           //Сохраняем время начала решения СЛАУ
-            oper_t += Dimension * Dimension;
 
             ///////////////////////////////////////////////
             //Создаем дополнительную переменную для суммирования известных членов в строках матрицы
@@ -356,7 +352,7 @@ namespace NumMethods
                 }
                 //Присваивание i-ой неизвестной 
                 x[TranspositionJ[i]] = y[i] - TempSum;
-                oper_f++;
+                //oper_f++;
             }
             TimeSpan sp = DateTime.Now - date;
             time_f += sp.TotalMilliseconds;
@@ -388,7 +384,7 @@ namespace NumMethods
 
         public void FirstMatrixInversion()
         {
-            Console.Clear();
+            //Console.Clear();
 
             double[] x = new double[Dimension];
 
@@ -398,8 +394,8 @@ namespace NumMethods
 
             e.Initialize();
 
-
-
+            oper_t += Dimension * Dimension * Dimension;
+            DateTime date = DateTime.Now;
 
             for (int i = 0; i < Dimension; i++)
             {
@@ -407,18 +403,16 @@ namespace NumMethods
                     e[i - 1] = 0;
                 e[i] = 1;
                 SolutionSLAE(e, ref x);
-                oper_f++;
-                DateTime date = DateTime.Now;
+                //oper_f++;              
                 for (int j = 0; j < Dimension; j++)
                     InvertMatrix1[j, i] = x[j];
                 oper_f++;
-                TimeSpan sp = DateTime.Now - date;
-                time_f += sp.TotalMilliseconds;
             }
 
+            TimeSpan sp = DateTime.Now - date;
+            time_f += sp.TotalMilliseconds;
 
-
-            PrintDataTrans(InvertMatrix1);
+            //PrintDataTrans(InvertMatrix1);
         }
 
         public void SecondMatrixInversion()
@@ -426,9 +420,9 @@ namespace NumMethods
 
             if (!AFactorized)
             {
-                Console.Clear();
+                //Console.Clear();
                 MatrixFactorization();
-                Console.WriteLine("Матрица была не факторизирована, факторизировали.\n");
+                //Console.WriteLine("Матрица была не факторизирована, факторизировали.\n");
             }
 
             InvertMatrix2 = new double[Dimension, Dimension];
@@ -523,7 +517,7 @@ namespace NumMethods
                         }
                     }
                     InvertMatrix2[TranspositionI[i], TranspositionJ[j]] = sum;
-                    oper_f++;
+                    //oper_f++;
                 }
             }
 
@@ -535,22 +529,31 @@ namespace NumMethods
             {
                 I[TranspositionI[i]] = i;
                 J[TranspositionJ[i]] = i;
-                oper_f++;
+                //oper_f++;
             }
-            Console.WriteLine("Матрица А:\n");
+            //Console.WriteLine("Матрица А:\n");
+            //for (int i = 0; i < Dimension; i++)
+            //{
+            //    for (int j = 0; j < Dimension; j++)
+            //        Console.Write(InvertMatrix2[TranspositionI[J[i]], TranspositionJ[I[j]]] + " \t");
+            //    oper_f++;
+            //    Console.WriteLine();
+            //}
+
+            double[,] reverseInvert = new double[Dimension, Dimension];
             for (int i = 0; i < Dimension; i++)
-            {
                 for (int j = 0; j < Dimension; j++)
-                    Console.Write(InvertMatrix2[TranspositionI[J[i]], TranspositionJ[I[j]]] + " \t");
-                oper_f++;
-                Console.WriteLine();
-            }
+                {
+                    reverseInvert[i, j] = InvertMatrix2[TranspositionI[J[i]], TranspositionJ[I[j]]];
+                    //oper_f++;
+                }
+            System.Array.Copy(reverseInvert, InvertMatrix2, Dimension * Dimension);
             TimeSpan sp = DateTime.Now - date;
             time_f += sp.TotalMilliseconds;
 
 
-            Console.ReadKey();
-            Console.Clear();
+            //Console.ReadKey();
+            //Console.Clear();
 
         }
 
@@ -560,14 +563,31 @@ namespace NumMethods
             Console.ReadKey();
             Console.Clear();
         }
-        public void Experiment()
+        public void Experiment3()
         {
             Console.Clear();
-            for (int type = 1; type < 11; type++)
+            for (int n = 5; n <= 100; n += 5)
             {
-                genMatrix(type);
-                PrintDataTrans(MtrxOfCoefs);
+                Matrix11(n);
+                double[,] savedCopy = new double[Dimension, Dimension];
+                System.Array.Copy(MtrxOfCoefs, savedCopy, Dimension * Dimension);
+                MatrixFactorization();
+                FirstMatrixInversion();
+                var oper_f_1 = oper_f;
+                var oper_t_1 = oper_t;
+                var time_f_1 = time_f;
+                Console.WriteLine($"Размерность {Dimension} \nПогрешность первого разложения: {AccuracyInvert(savedCopy, 1)}");
+                Console.WriteLine($"Реальное число операций: {oper_f_1}, теоретическое число операций: {oper_t_1}, скорость решения задачи: {time_f_1}");
+                System.Array.Copy(savedCopy, MtrxOfCoefs, Dimension * Dimension);
+                MatrixFactorization();
+                SecondMatrixInversion();
+                var oper_t_2 = oper_t;
+                var oper_f_2 = oper_f;
+                var time_f_2 = time_f;
+                Console.WriteLine($"Погрешность второго разложения: {AccuracyInvert(savedCopy, 2)}");
+                Console.WriteLine($"Реальное число операций: {oper_f_2}, теоретическое число операций: {oper_t_2}, скорость решения задачи: {time_f_2}");
             }
+            Console.ReadKey();
             Console.Clear();
         }
 
@@ -591,109 +611,111 @@ namespace NumMethods
             switch (type)
             {
                 case 1:
-                    for (int n = 4; n < 40; n += 4)
+                    for (int n = 4; n <= 40; n += 4)
                     {
-                        AFactorized = false;
+                        oper_t = 0;
+                        oper_f = 0;
+                        AFactorized = true;
                         Matrix1(n);
-                        SolutionSLAE(true);
-                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        //SolutionSLAE(true);
                         Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
                     }
                     break;
                 case 2:
                     {
-                        AFactorized = false;
+                        AFactorized = true;
                         Matrix2();
-                        SolutionSLAE(true);
-                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        //SolutionSLAE(true);
                         Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
                     }
                     break;
                 case 3:
                     {
-                        AFactorized = false;
+                        AFactorized = true;
                         Matrix3();
-                        SolutionSLAE(true);
-                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        //SolutionSLAE(true);
                         Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
                     }
                     break;
                 case 4:
-                    for (int n = 4; n < 40; n += 4)
+                    for (int n = 4; n <= 40; n += 4)
                     {
-                        AFactorized = false;
+                        AFactorized = true;
                         Matrix4(n);
-                        SolutionSLAE(true);
-                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        //SolutionSLAE(true);
                         Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
                     }
                     break;
                 case 5:
-                    for (int n = 4; n < 40; n += 4)
+                    for (int n = 4; n <= 40; n += 4)
                     {
-                        AFactorized = false;
+                        AFactorized = true;
                         Matrix5(n);
-                        SolutionSLAE(true);
-                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        //SolutionSLAE(true);
                         Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
                     }
                     break;
                 case 6:
                     {
-                        AFactorized = false;
+                        AFactorized = true;
                         Matrix6();
-                        SolutionSLAE(true);
-                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        //SolutionSLAE(true);
                         Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
                     }
                     break;
                 case 7:
-                    for (int n = 4; n < 40; n += 4)
+                    for (int n = 4; n <= 40; n += 4)
                     {
-                        AFactorized = false;
+                        AFactorized = true;
                         Matrix7(n);
-                        SolutionSLAE(true);
-                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        //SolutionSLAE(true);
                         Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
                     }
                     break;
                 case 8:
-                    for (int n = 4; n < 40; n += 4)
+                    for (int n = 4; n <= 40; n += 4)
                     {
-                        AFactorized = false;
+                        AFactorized = true;
                         Matrix8(n);
-                        SolutionSLAE(true);
-                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        //SolutionSLAE(true);
                         Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
                     }
                     break;
                 case 9:
-                    for (int n = 4; n < 40; n += 4)
+                    for (int n = 4; n <= 40; n += 4)
                     {
-                        AFactorized = false;
+                        AFactorized = true;
                         Matrix9(n);
-                        SolutionSLAE(true);
-                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        //SolutionSLAE(true);
                         Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
                     }
                     break;
                 case 10:
                     {
-                        AFactorized = false;
+                        AFactorized = true;
                         Matrix10();
-                        SolutionSLAE(true);
-                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        //SolutionSLAE(true);
                         Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
                     }
                     break;
                 case 11:
-                    for (int n = 5; n < 100; n += 5)
+                    for (int n = 5; n <= 100; n += 5)
                     {
-                        AFactorized = false;
+                        AFactorized = true;
                         Matrix11(n);
-                        SolutionSLAE(true);
-                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");                        
+                        //SolutionSLAE(true);
                         Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
                     }
                     break;
 
@@ -805,7 +827,7 @@ namespace NumMethods
         }
         private void Matrix6()
         {
-            double arg = Math.PI;
+            double arg = Math.PI - 0.1;
             Dimension = 8;
             MtrxOfCoefs = new double[Dimension, Dimension];
             double[,] T = new double[,] { { 1, 1 }, { 1, 1 } };
@@ -843,7 +865,7 @@ namespace NumMethods
         {
             Dimension = n;
             MtrxOfCoefs = new double[Dimension, Dimension];
-            double arg = 0;
+            double arg = 2;
             for (int i = 1; i <= Dimension; i++)
             {
                 MtrxOfCoefs[i - 1, i - 1] = Math.Pow(arg, Math.Abs((double)Dimension - (double)i * 2) / 2);
@@ -874,7 +896,7 @@ namespace NumMethods
         {
             Dimension = n;
             MtrxOfCoefs = new double[Dimension, Dimension];
-            double arg = 0;
+            double arg = 0.000000001;
             for (int i = 1; i <= Dimension; i++)
             {
                 for (int j = 1; j <= Dimension; j++)
@@ -887,11 +909,11 @@ namespace NumMethods
         {
             Dimension = n;
             MtrxOfCoefs = new double[Dimension, Dimension];
+            double arg = 99999;
             for (int i = 1; i <= Dimension; i++)
             {
                 for (int j = 1; j <= Dimension; j++)
                 {
-                    double arg = 0;
                     MtrxOfCoefs[i - 1, j - 1] = arg + Math.Log((double)i * (double)j, 2);
                 }
             }
@@ -920,30 +942,84 @@ namespace NumMethods
 
         private double AccuracySLAE()
         {
-            SolutionSLAE(true);
-            double[] savedSolution = new double[Dimension];
-            VctrOfVars.CopyTo(savedSolution, 0);
+            //SolutionSLAE(true);
+            double[] savedVars = new double[Dimension];
+            VctrOfVars = new double[Dimension];
             for (int i = 0; i < Dimension; i++)
-                VctrOfFreeMembers[i] = (double)i + 1;
+            {
+                VctrOfVars[i] = (double)i + 1;
+            }
+
+            VctrOfVars.CopyTo(savedVars, 0);
+            VctrOfFreeMembers = new double[Dimension];
+
+            for (int i = 0; i < Dimension; i++)
+                for (int j = 0; j < Dimension; j++)
+                    VctrOfFreeMembers[i] += MtrxOfCoefs[i, j] * VctrOfVars[j];
+            AFactorized = false;
             SolutionSLAE(false);
             double maxAccuracy = 0;
             for (int i = 0; i < Dimension; i++)
             {
-                if ((VctrOfVars[i] - savedSolution[i]) > maxAccuracy)
-                    maxAccuracy = VctrOfVars[i] - savedSolution[i];
+                if (Math.Abs(savedVars[i] - VctrOfVars[i]) > maxAccuracy)
+                    maxAccuracy = Math.Abs(savedVars[i] - VctrOfVars[i]);
             }
 
             return maxAccuracy;
         }
 
-        private void AccuracyFirstInv()
+        private double AccuracyInvert(double[,] copy, int mode)
         {
+            double[,] e = new double[Dimension, Dimension];
+            double[,] multiplication = new double[Dimension, Dimension];
+            e.Initialize();
+            for (int i = 0; i < Dimension; i++)
+                e[i, i] = 1;
+            if (mode == 1)
+            {
+                for (int i = 0; i < Dimension; i++)
+                    for (int j = 0; j < Dimension; j++)
+                        for (int k = 0; k < Dimension; k++)
+                        {
+                            multiplication[i, j] += copy[i, k] * InvertMatrix1[k, j];
+                        }
+            }
+            else
+            {
+                for (int i = 0; i < Dimension; i++)
+                    for (int j = 0; j < Dimension; j++)
+                        for (int k = 0; k < Dimension; k++)
+                        {
+                            multiplication[i, j] += copy[i, k] * InvertMatrix2[k, j];
+                        }
+            }
 
+            for (int i = 0; i < Dimension; i++)
+                for (int j = 0; j < Dimension; j++)
+                    e[i, j] -= multiplication[i, j];
+
+            double maxPrev = 0;
+            double maxRazn = 0;
+
+            for (int i = 0; i < Dimension; i++)
+            {
+                double norma1 = 0;
+                double norma2 = 0;
+
+                for (int j = 0; j < Dimension; j++)
+                {
+                    norma1 += copy[i, j];
+                    norma2 += e[i, j];
+                }
+
+                if (norma1 > maxPrev)
+                    maxPrev = norma1;
+                if (norma2 > maxRazn)
+                    maxRazn = norma2;
+            }
+
+            return maxRazn / maxPrev;
         }
 
-        private void AccuracySecondInv()
-        {
-
-        }
     }
 }

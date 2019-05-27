@@ -559,6 +559,8 @@ namespace NumMethods
 
         public void Experiment1()
         {
+            Console.Clear();
+            Console.WriteLine("| Порядок\t| Время\t\t\t| Точность\t\t\t| ТЧО\t\t\t| РЧО\t ");
             genMatrix(11);
             Console.ReadKey();
             Console.Clear();
@@ -566,6 +568,7 @@ namespace NumMethods
         public void Experiment3()
         {
             Console.Clear();
+            Console.WriteLine("| Порядок\t| Время1\t| Время2\t| Точность1\t\t| Точность2\t\t| ТЧО\t\t| РЧО1\t| РЧО2\t");
             for (int n = 5; n <= 100; n += 5)
             {
                 Matrix11(n);
@@ -576,16 +579,24 @@ namespace NumMethods
                 var oper_f_1 = oper_f;
                 var oper_t_1 = oper_t;
                 var time_f_1 = time_f;
-                Console.WriteLine($"Размерность {Dimension} \nПогрешность первого разложения: {AccuracyInvert(savedCopy, 1)}");
-                Console.WriteLine($"Реальное число операций: {oper_f_1}, теоретическое число операций: {oper_t_1}, скорость решения задачи: {time_f_1}");
+                var accuracy_1 = AccuracyInvert(savedCopy, 1);
                 System.Array.Copy(savedCopy, MtrxOfCoefs, Dimension * Dimension);
                 MatrixFactorization();
                 SecondMatrixInversion();
                 var oper_t_2 = oper_t;
                 var oper_f_2 = oper_f;
                 var time_f_2 = time_f;
-                Console.WriteLine($"Погрешность второго разложения: {AccuracyInvert(savedCopy, 2)}");
-                Console.WriteLine($"Реальное число операций: {oper_f_2}, теоретическое число операций: {oper_t_2}, скорость решения задачи: {time_f_2}");
+                var accuracy_2 = AccuracyInvert(savedCopy, 2);
+                Console.WriteLine("| {0,3}\t\t| {1,6}\t| {2,6}\t| {3,8}\t| {4,8}\t| {5,6}\t| {6,6}\t| {7,6}\t", 
+                    Dimension,
+                    time_f_1,
+                    time_f_2,
+                    accuracy_1,
+                    accuracy_2,
+                    oper_t_1,
+                    oper_f_1,
+                    oper_f_2
+                    );
             }
             Console.ReadKey();
             Console.Clear();
@@ -596,8 +607,10 @@ namespace NumMethods
             Console.Clear();
             for (int type = 1; type < 11; type++)
             {
-                genMatrix(type);
+                Console.WriteLine("| Порядок\t| Время\t\t\t| Точность\t\t\t| ТЧО\t\t\t| РЧО\t ");
+                genMatrix(type); 
                 Console.WriteLine($"{type}-----------------------------------------{type}");
+                Console.WriteLine();
                 // PrintDataTrans(MtrxOfCoefs);
             }
             Console.ReadKey();
@@ -618,8 +631,7 @@ namespace NumMethods
                         AFactorized = true;
                         Matrix1(n);
                         //SolutionSLAE(true);
-                        Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
-                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        Console.WriteLine("| {0,3}\t\t| {1,6}\t\t| {2,10}\t\t| {3,6}\t\t| {4,6}\t\t ", Dimension, time_f, AccuracySLAE(), oper_t, oper_f);
                     }
                     break;
                 case 2:
@@ -627,8 +639,9 @@ namespace NumMethods
                         AFactorized = true;
                         Matrix2();
                         //SolutionSLAE(true);
-                        Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
-                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        //Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                        //Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        Console.WriteLine("| {0,3}\t\t| {1,6}\t\t| {2,10}\t\t| {3,6}\t\t| {4,6}\t\t ", Dimension, time_f, AccuracySLAE(), oper_t, oper_f);
                     }
                     break;
                 case 3:
@@ -636,8 +649,9 @@ namespace NumMethods
                         AFactorized = true;
                         Matrix3();
                         //SolutionSLAE(true);
-                        Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
-                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        //Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                        //Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        Console.WriteLine("| {0,3}\t\t| {1,6}\t\t| {2,10}\t\t| {3,6}\t\t| {4,6}\t\t ", Dimension, time_f, AccuracySLAE(), oper_t, oper_f);
                     }
                     break;
                 case 4:
@@ -646,8 +660,9 @@ namespace NumMethods
                         AFactorized = true;
                         Matrix4(n);
                         //SolutionSLAE(true);
-                        Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
-                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        //Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                        //Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        Console.WriteLine("| {0,3}\t\t| {1,6}\t\t| {2,10}\t\t| {3,6}\t\t| {4,6}\t\t ", Dimension, time_f, AccuracySLAE(), oper_t, oper_f);
                     }
                     break;
                 case 5:
@@ -656,8 +671,9 @@ namespace NumMethods
                         AFactorized = true;
                         Matrix5(n);
                         //SolutionSLAE(true);
-                        Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
-                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        //Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                        //Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        Console.WriteLine("| {0,3}\t\t| {1,6}\t\t| {2,10}\t\t| {3,6}\t\t| {4,6}\t\t ", Dimension, time_f, AccuracySLAE(), oper_t, oper_f);
                     }
                     break;
                 case 6:
@@ -665,8 +681,9 @@ namespace NumMethods
                         AFactorized = true;
                         Matrix6();
                         //SolutionSLAE(true);
-                        Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
-                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        //Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                        //Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        Console.WriteLine("| {0,3}\t\t| {1,6}\t\t| {2,10}\t\t| {3,6}\t\t| {4,6}\t\t ", Dimension, time_f, AccuracySLAE(), oper_t, oper_f);
                     }
                     break;
                 case 7:
@@ -675,8 +692,9 @@ namespace NumMethods
                         AFactorized = true;
                         Matrix7(n);
                         //SolutionSLAE(true);
-                        Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
-                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        //Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                        //Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        Console.WriteLine("| {0,3}\t\t| {1,6}\t\t| {2,10}\t\t| {3,6}\t\t| {4,6}\t\t ", Dimension, time_f, AccuracySLAE(), oper_t, oper_f);
                     }
                     break;
                 case 8:
@@ -685,8 +703,9 @@ namespace NumMethods
                         AFactorized = true;
                         Matrix8(n);
                         //SolutionSLAE(true);
-                        Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
-                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        //Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                        //Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        Console.WriteLine("| {0,3}\t\t| {1,6}\t\t| {2,10}\t\t| {3,6}\t\t| {4,6}\t\t ", Dimension, time_f, AccuracySLAE(), oper_t, oper_f);
                     }
                     break;
                 case 9:
@@ -695,8 +714,9 @@ namespace NumMethods
                         AFactorized = true;
                         Matrix9(n);
                         //SolutionSLAE(true);
-                        Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
-                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        //Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                        //Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        Console.WriteLine("| {0,3}\t\t| {1,6}\t\t| {2,10}\t\t| {3,6}\t\t| {4,6}\t\t ", Dimension, time_f, AccuracySLAE(), oper_t, oper_f);
                     }
                     break;
                 case 10:
@@ -704,8 +724,9 @@ namespace NumMethods
                         AFactorized = true;
                         Matrix10();
                         //SolutionSLAE(true);
-                        Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
-                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        //Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                        //Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        Console.WriteLine("| {0,3}\t\t| {1,6}\t\t| {2,10}\t\t| {3,6}\t\t| {4,6}\t\t ", Dimension, time_f, AccuracySLAE(), oper_t, oper_f);
                     }
                     break;
                 case 11:
@@ -714,8 +735,9 @@ namespace NumMethods
                         AFactorized = true;
                         Matrix11(n);
                         //SolutionSLAE(true);
-                        Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
-                        Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        //Console.WriteLine($"Погрешность решения СЛАУ: {AccuracySLAE()}");
+                        //Console.WriteLine($"Реальное число операций: {oper_f}, теоретическое число операций: {oper_t}, скорость решения задачи: {time_f}");
+                        Console.WriteLine("| {0,3}\t\t| {1,6}\t\t| {2,10}\t\t| {3,6}\t\t| {4,6}\t\t ", Dimension, time_f, AccuracySLAE(), oper_t, oper_f);
                     }
                     break;
 
